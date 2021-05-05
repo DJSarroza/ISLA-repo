@@ -1,0 +1,789 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+<script>
+document.getElementById("main-nav-link-ncs").className += " active";
+</script>
+
+
+<script>
+    
+    function parse_single_predicate(input_str){
+        
+        output = input_str.replace(/[()]/g, '').split(' - ')
+        return(output)
+    
+    }
+    
+    function typeIsOfType(type1, type2, object_types_array){
+        //console.log(type1+" is of type "+type2)
+        if(type1 == type2){
+            return true
+        }
+        
+        for(var ctr=0;ctr<object_types_array.length;ctr++){
+            if(object_types_array[ctr][0] == type1){
+                return(typeIsOfType(object_types_array[ctr][1],type2, object_types_array))
+            }
+        }
+        
+        return false
+        
+    }
+    
+    function update_intention_inputarea(state_predicate_info_str, sequence_term_objs_str, objecttype_str, input_id){
+        
+        sequence_term_objs_array = []
+        raw_rows = sequence_term_objs_str.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 5){
+                sequence_term_objs_array.push([split_row[1],split_row[2]])
+            }
+        }
+        
+        //alert(objecttype_str)
+        objecttype_array = []
+        raw_rows = objecttype_str.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            //alert(split_row)
+            if(split_row.length == 7){
+                objecttype_array.push([split_row[2],split_row[3]])
+            }
+        }
+        
+        //console.log(objecttype_array)
+        
+        //=======
+        raw_rows = state_predicate_info_str.split("/|")    
+        
+        //=======
+        output_HTML = ""
+        
+        //output_HTML = output_HTML + "intention header <br>\n"
+        
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            //alert(split_row.length)
+            //  length == 44
+            
+            if(split_row.length == 44){
+                // str(somepred.id)                       + "/;" + \       1
+                // str(somepred.domain_id)                + "/;" + \       2
+                // str(somepred.predicate_label)          + "/;" + \       3
+                // str(somepred.definition_str)           + "/;" + \       4
+                // str(somepred.parameter1_label)         + "/;" + \       5
+                // str(somepred.parameter1_type)          + "/;" + \       6
+                // str(somepred.parameter2_label)         + "/;" + \       7
+                // str(somepred.parameter2_type)          + "/;" + \       8
+                // str(somepred.parameter3_label)         + "/;" + \       9
+                // str(somepred.parameter3_type)          + "/;" + \       10
+                // str(somepred.parameter4_label)         + "/;" + \       11
+                // str(somepred.parameter4_type)          + "/;" + \       12
+                // str(somepred.parameter5_label)         + "/;" + \       13
+                // str(somepred.parameter5_type)          + "/;" + \       14
+                // str(somepred.parameter6_label)         + "/;" + \       15
+                // str(somepred.parameter6_type)          + "/;" + \       16
+                // str(somepred.primary_object)           + "/;" + \       17
+                // str(somepred.secondary_object)         + "/;" + \       18
+                // str(somepred.humanreadable_string1)    + "/;" + \       19
+                // str(somepred.humanreadable_string2)    + "/;" + \       20
+                // str(somepred.humanreadable_string3)    + "/;" + \       21
+                // str(somepred.humanreadable_string4)    + "/;" + \       22
+                // str(somepred.getFunctionString())      + "/;" + \       23
+                // str(somepred.status)                   + "/;" + \       24
+                // "/|"                                                    25
+                
+                //output_HTML = output_HTML + "intention  subheader <br>\n"
+                
+                output_HTML = output_HTML + "<table class='table'> "        + "\n"
+                
+                output_HTML = output_HTML + "<tr> "      + "\n"
+                output_HTML = output_HTML + "  <td>Not/Negative</td> "   + "\n"
+                output_HTML = output_HTML + "  <td class='text-center'><input class='form-check-input' id='"+input_id+"_negative_pred' type='checkbox'></td> " + "\n"
+                output_HTML = output_HTML + "</tr> "                        + "\n"
+                
+                output_HTML = output_HTML + "<tr> "      + "\n"
+                output_HTML = output_HTML + "  <td>predicate_label</td> "   + "\n"
+                output_HTML = output_HTML + "  <td>"+ split_row[2]+"\n"
+                output_HTML = output_HTML + "    <input class='form-control' type='hidden' id='"+input_id+"_predicate_label' value='"+ split_row[2]+"'>\n"
+                output_HTML = output_HTML + "  </td> " + "\n"
+                output_HTML = output_HTML + "</tr> "                        + "\n"
+                
+                output_HTML = output_HTML + "<tr> "                         + "\n"
+                output_HTML = output_HTML + "  <td>function_str</td> "    + "\n"
+                output_HTML = output_HTML + "  <td>"+ split_row[34]+"\n"
+                output_HTML = output_HTML + "    <input class='form-control' type='hidden' id='"+input_id+"_function_str' value='"+ split_row[34]+"'>\n"
+                output_HTML = output_HTML + "  </td> " + "\n"
+                output_HTML = output_HTML + "</tr> "                        + "\n"
+                
+                for(p=0; p<6; p++){
+                    p_i = 4+(p*4)
+                    if(split_row[p_i] != ""){
+                        output_HTML = output_HTML + "<tr>\n"
+                        output_HTML = output_HTML + "  <td>parameter: "+split_row[4+(p*4)]+"</td>\n"
+                        
+                        output_HTML = output_HTML + "  <td>\n"
+                        output_HTML = output_HTML + "    <input class='form-control' type='hidden' class='collapse' id='"+input_id+"_param_var"+(p+1)+"' value='"+split_row[4+(p*4)]+"'>\n"
+                        output_HTML = output_HTML + "    <select class='form-control' id='"+input_id+"_param_val"+(p+1)+"'>\n"
+                        output_HTML = output_HTML + "    <option value=''>--select one--</option>\n"
+                        
+                        
+                        
+                        
+                        for(o_ctr=0;o_ctr<sequence_term_objs_array.length;o_ctr++){
+                            //logstr = sequence_term_objs_array[o_ctr][1] + " is of type " + split_row[p_i+1]
+                            
+                            if(typeIsOfType(sequence_term_objs_array[o_ctr][1], split_row[p_i+1],objecttype_array)){
+                                output_HTML = output_HTML + "    <option value='"+sequence_term_objs_array[o_ctr][0]+"'>"+sequence_term_objs_array[o_ctr][0]+"</option>\n"
+                            }
+                        }
+                        output_HTML = output_HTML + "    </select>\n"
+                        output_HTML = output_HTML + "  </td>\n"
+                        output_HTML = output_HTML + "</tr> "                                                    + "\n"
+                    }
+                }
+                output_HTML = output_HTML + "</table>" + "\n"
+            }
+        }
+        
+        document.getElementById(input_id + "_inputarea").innerHTML = output_HTML
+    
+    }
+    
+    function intention_onchange(input_id){
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_state_predicate_def_info', {
+            definition_str   :  document.getElementById(input_id + "_defstr").value    
+        }, function(data) {
+            
+            state_predicate_info_str = data.result
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_sequence_term_objects', {
+                domain_full_label   :  document.getElementById("sequence_term_cat_domain").value 
+            }, function(data) {
+                
+                sequence_term_objs_str = data.result
+                
+                $.getJSON($SCRIPT_ROOT + '/_get_objecttypes', {
+                    domain_id   :  document.getElementById("sequence_term_cat_domain_id").value 
+                }, function(data) {
+                
+                    objecttype_str = data.result
+                    update_intention_inputarea(state_predicate_info_str, sequence_term_objs_str, objecttype_str, input_id)
+                });
+            });
+        });
+    }
+    
+    function intention_qty_selector_onchange(){
+        
+        for(var i=1;i<=3;i++){
+        
+            if(i <= document.getElementById("intention_qty_selector").value){
+                document.getElementById("cat01_seq01_int0"+i+"_mainrow").classList.remove("collapse")
+                document.getElementById("cat01_seq01_int0"+i+"_active").value = 1
+            }else{
+                document.getElementById("cat01_seq01_int0"+i+"_mainrow").classList.add("collapse")
+                document.getElementById("cat01_seq01_int0"+i+"_active").value = 0
+            }
+        }
+    }
+    
+    function submit_category_instance_onclick(){
+
+        has_error = false
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        
+        last_term_sequence = "0"
+        
+        if(document.getElementById("sequence_term_cat_label_existing").value != ""){
+            sequence_term_cat_label = document.getElementById("sequence_term_cat_label_existing").value
+        }else{
+            sequence_term_cat_label = document.getElementById("sequence_term_cat_label_new").value
+        }
+        
+        if(sequence_term_cat_label == ""){
+            message_text = "Missing required field in General Information area: Catagory Label"
+            add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+            has_error = true
+        }
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_last_term_sequence', {
+            sequence_term_cat_label : sequence_term_cat_label
+        }, function(data) {
+            
+            if(data.result == ""){
+                last_term_sequence = "0"
+            }else{
+                last_term_sequence = data.result
+            }
+            
+            //alert("Number("+last_term_sequence+"): " + Number(last_term_sequence))
+            
+            sequence_term_cat_label = sequence_term_cat_label
+            main_label              = document.getElementById("main_label").value                        
+            sub_label               = document.getElementById("sub_label").value                          
+            term_sequence           = Number(last_term_sequence) + 1
+            
+            // term_sequence_grouping_label            
+            
+            if(main_label == ""){
+                message_text = "Missing required field in Sequence Term area: Main Label"
+                add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+                has_error = true
+            }
+            if(term_sequence <= 0){
+                message_text = "Term sequence number is invalid, reset to default: 1"
+                add_flash_message(message_text,"warning","default","header_flash_message_area","top")
+                term_sequence = 1
+            }
+            
+            // sequence_term_full_label  
+            
+            for(var intention_cnt=1; intention_cnt <= document.getElementById("intention_qty_selector").value;intention_cnt++){
+                
+                if(document.getElementById("cat01_seq01_int0"+intention_cnt+"_defstr").value == ""){
+                    message_text = "Missing required field in Intention "+intention_cnt+": Intention Predicate"
+                    add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+                    has_error = true
+                    continue
+                }
+                
+                
+                intent_pred = document.getElementById("cat01_seq01_int0"+intention_cnt+"_function_str").value
+                
+                if(document.getElementById("cat01_seq01_int0"+intention_cnt+"_negative_pred").value == "checked"){
+                    intent_target = "(not ("+intent_pred+"))"
+                }else{
+                    intent_target = "("+intent_pred+")"
+                }
+                
+                //alert("intent_target: " + intent_target)
+                
+                
+                for(p=0; p<6; p++){
+                    try{
+                        if(document.getElementById("cat01_seq01_int0"+intention_cnt+"_param_var"+(p+1)).value == ""){
+                            message_text = "Missing required field in Intention "+intention_cnt+": Parameter Variable " + (p+1)
+                            add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+                            has_error = true
+                        }else{
+                            param_var = document.getElementById("cat01_seq01_int0"+intention_cnt+"_param_var"+(p+1)).value
+                        }
+                        
+                        if(document.getElementById("cat01_seq01_int0"+intention_cnt+"_param_val"+(p+1)).value == ""){
+                            message_text = "Missing required field in Intention "+intention_cnt+": Parameter Value " + (p+1)
+                            add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+                            has_error = true
+                        }else{
+                            param_val = document.getElementById("cat01_seq01_int0"+intention_cnt+"_param_val"+(p+1)).value
+                        }
+                        
+                        if(has_error){
+                            continue
+                        }
+                        
+                        intent_target = intent_target.replace(param_var,param_val)
+                    }catch(err){
+                    
+                    }
+                }
+                
+                if(has_error){
+                    continue
+                }
+                
+                series = intention_cnt
+                main_object = document.getElementById("cat01_seq01_int0"+intention_cnt+"_actor_input").value
+                supporting_objects = ""
+                intent_actor = document.getElementById("cat01_seq01_int0"+intention_cnt+"_actor_input").value.replace(/[()]/g, '').split(" - ")[0]
+                intent_fullstr = "(intends "+intent_actor+" "+intent_target+")"
+                
+                domain_full_label = document.getElementById("sequence_term_cat_domain_full_label").value    
+                visibility = document.getElementById("sequence_term_cat_visibility").value
+                // is_flavor                               
+                // is_variant                              
+                // vacant1                                 
+                //main_object                             = main_object
+                // supporting_objects                      
+                intention_actor                         = document.getElementById("cat01_seq01_int0"+intention_cnt+"_actor_input").value.replace(/[()]/g, '').split(" - ")[0]
+                intention_target_state_predicate        = intent_target
+                intention_full_str                      = intent_fullstr
+                // intention_type                          
+                // predecessor_terms                       
+                // direct_chained_with                     
+                // successors                              
+                // prerequisite_present_predicates         
+                // prerequisite_target_predicates          
+                // required_objects                        
+                // in_chapter_pattern                      
+                // vacant2                                 
+                // vacant3                                 
+                // status                                  
+                // notes                                   
+            
+                
+                //  AJAX Submission call
+                $.getJSON($SCRIPT_ROOT + '/_submit_category_instance', {
+                    domain_full_label                   : domain_full_label                 ,
+                    visibility                          : visibility                        ,
+                    sequence_term_cat_label             : sequence_term_cat_label           ,
+                    main_label                          : main_label                        ,
+                    sub_label                           : sub_label                         ,
+                    term_sequence                       : term_sequence                     ,
+                    series                              : series                            ,
+                    main_object                         : main_object                       ,    
+                    supporting_objects                  : supporting_objects                ,
+                    intention_actor                     : intention_actor                   ,
+                    intention_target_state_predicate    : intention_target_state_predicate  ,
+                    intention_full_str                  : intention_full_str              
+                    
+                }, function(data) {
+                    //output_HTML = document.getElementById("header_flash_message_area").innerHTML
+                    //output_HTML = output_HTML + "<div class='alert alert-success'>Successfully added: "+ data.result +"</div>"
+                    //document.getElementById("header_flash_message_area").innerHTML = output_HTML
+                    
+                    message_text = "Successfully added: "+ data.result
+                    add_flash_message(message_text,"success","default","header_flash_message_area")
+                });
+                
+            }
+
+
+
+        });
+        
+
+    }
+    
+    function sequence_term_cat_label_existing_onchange(){
+        if(document.getElementById("sequence_term_cat_label_existing").value != ""){
+            document.getElementById("sequence_term_cat_label_new").disabled = true
+            document.getElementById("sequence_term_cat_domain").disabled = true
+            //document.getElementById("sequence_term_description").disabled = true
+            
+            // Update description
+        }else{
+            document.getElementById("sequence_term_cat_label_new").disabled = false
+            document.getElementById("sequence_term_cat_domain").disabled = false
+            //document.getElementById("sequence_term_description").disabled = false
+        }
+    }
+    
+    function main_label_onchange(){
+        
+        sequence_term_cat_label_new = document.getElementById("sequence_term_cat_label_new").value
+        sequence_term_cat_label_existing = document.getElementById("sequence_term_cat_label_existing").value
+        
+        if(sequence_term_cat_label_existing == ""){
+            sequence_term_cat_label = sequence_term_cat_label_new
+        }else{
+            sequence_term_cat_label = sequence_term_cat_label_existing
+        }
+        
+        main_label = document.getElementById("main_label").value
+        sub_label = document.getElementById("sub_label").value
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_sequence_term', {
+            sequence_term_cat_label : sequence_term_cat_label,
+            main_label              : main_label,
+            sub_label               : sub_label 
+        }, function(data) {
+            if(data.result != ""){
+                message_text = "Existing sequence terms have the same label, consider chaging to avoid conflicts. ["+main_label
+                if(sub_label != ""){
+                    message_text = message_text +" - "+sub_label+"]"
+                }else{
+                    message_text = message_text +"]"
+                }
+                add_flash_message(message_text,"warning","default","header_flash_message_area","top")
+                
+            }
+        });
+        
+    }
+    
+    function sequence_term_cat_domain_onchange(input_id){
+        $.getJSON($SCRIPT_ROOT + '/_get_domain_info_from_label', {
+            domain_full_label   :  document.getElementById("sequence_term_cat_domain").value    
+        }, function(data) {
+            update_domain_info_area(data.result)
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_sequence_term_actors', {
+                domain_full_label   :  document.getElementById("sequence_term_cat_domain").value    
+            }, function(data) {
+                update_intention_actor_area("cat01_seq01_int01", data.result)
+                update_intention_actor_area("cat01_seq01_int02", data.result)
+                update_intention_actor_area("cat01_seq01_int03", data.result)
+            });
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_state_predicates_defnstr', {
+                domain_id   :  document.getElementById("sequence_term_cat_domain_id").value    
+            }, function(data) {
+                update_intention_predicate_area("cat01_seq01_int01", data.result)
+                update_intention_predicate_area("cat01_seq01_int02", data.result)
+                update_intention_predicate_area("cat01_seq01_int03", data.result)
+            });
+        });
+    }
+    
+    function update_intention_actor_area(input_id, raw_result){
+    
+        raw_rows = raw_result.split("/|")    
+        
+        //=======
+        output_HTML = ""
+        output_HTML = output_HTML + "<select class='form-control' id='"+input_id+"_actor_input'>\n"
+        output_HTML = output_HTML + "<option value='' selected>--select one--</option>\n"
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 5){
+                obj_name = split_row[1]
+                obj_type = split_row[2]
+                output_HTML = output_HTML + "<option value='('"+obj_name+"','"+obj_type+"')'>('"+obj_name+"','"+obj_type+"')</option>\n"
+            }
+        }
+        output_HTML = output_HTML + "</select>\n"
+        document.getElementById(input_id+"_actor_input_area").innerHTML = output_HTML
+        
+    }
+
+    function update_intention_predicate_area(input_id, raw_result){
+    
+        raw_rows = raw_result.split("/|")    
+        //alert("!")
+        //=======
+        output_HTML = ""
+        output_HTML = output_HTML + "<select class='form-control' id='"+input_id+"_defstr' onchange=\"intention_onchange('"+input_id+"');\">\n"
+        //output_HTML = output_HTML + "<select class="form-control" id='"+input_id+"_defstr'>\n"
+        output_HTML = output_HTML + "<option value='' selected>--select one--</option>\n"
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 3){
+                definition_str          = split_row[0]
+                humanreadable_string1   = split_row[1]
+                output_HTML = output_HTML + '<option value="'+definition_str+'">'+humanreadable_string1+'</option>\n'
+            }
+        }
+        output_HTML = output_HTML + "</select>\n" 
+        document.getElementById(input_id+"_defstr_area").innerHTML = output_HTML 
+    }
+    
+    function update_domain_info_area(raw_result){
+        raw_rows = raw_result.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 14){
+                document.getElementById("sequence_term_cat_domain_id").value = split_row[0]
+                document.getElementById("sequence_term_cat_domain_full_label").value = split_row[6]
+            }
+        }
+    }
+    
+</script>
+<div class="content-section">
+    <div class="row form-group">
+        <div class="col-md-8">
+            <h3 class="display-5">Add New Sequence Term</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!--Extra area-->
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-8">
+        Sequence terms are specific chapter goals that need to be met.
+        </div>
+    </div>
+</div>
+
+<div class="content-section">
+    <div class="row form-group">
+        <div class="col-md-8">
+            <h3 class="display-5">General Information</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!--Extra area-->
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-12 small text-info font-italic">
+        Create a new category
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-3">
+            New Category Label
+        </div>
+        <div class="col-md-6">
+            <input class='form-control' id="sequence_term_cat_label_new" type="text" size="12">
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Description
+        </div>
+        <div class="col-md-6">
+            <textarea class='form-control' id="sequence_term_description" rows="3" cols="30" disabled></textarea>
+        </div>
+    </div>
+    
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Domain
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="sequence_term_cat_domain" onchange="sequence_term_cat_domain_onchange()">
+              <option value="" selected>--Select one--</option>
+              {% for somedomain in domains %}
+              <option value="{{ somedomain.domain_full_label }}">{{ somedomain.readable_label }}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" value="" id="sequence_term_cat_domain_id">
+            <input type="hidden" value="" id="sequence_term_cat_domain_full_label">
+        </div>
+    </div>
+    
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Visibility
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="sequence_term_cat_visibility">
+              <option value="PRIVATE-WRITE">Private</option>
+              <option value="PUBLIC-READONLY">Public - Read Only</option>
+              <option value="PUBLIC-WRITE">Public - Full Privileges</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="dropdown-divider"></div>
+    <div class="row pt-1">
+        <div class="col-md-12 small text-info font-italic">
+        ... or add to an existing category
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Category Label
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="sequence_term_cat_label_existing" onchange="sequence_term_cat_label_existing_onchange()">
+              <option value="" selected>--Select one--</option>
+              {% for somelabel in existing_sequence_term_labels %}
+              <option value="{{ somelabel.sequence_term_cat_label }}">{{ somelabel.sequence_term_cat_label }}</option>
+              {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="content-section">
+    <div class="row pt-1">
+        <div class="col-md-8">
+            <h3 class="display-5">Sequence Term</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!--Extra area-->
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-2">
+            Main Label
+        </div>
+        <div class="col-md-2">
+            <input class='form-control' id="main_label" type="text" size="12" onchange="main_label_onchange()">
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-2">
+            Sub Label
+        </div>
+        <div class="col-md-2">
+            <input class='form-control' id="sub_label" type="text" size="12" onchange="main_label_onchange()">
+        </div>
+    </div>
+
+    <div class="row pt-1">
+        <div class="col-md-2">
+            Intentions
+        </div>
+        <div class="col-md-6">
+            <!--<input class='form-control' type="number" min="1" max="3" size=1 value=1 id="intention_qty_selector" onchange="intention_qty_selector_onchange()">-->
+            <select class="form-control" id="intention_qty_selector" onchange="intention_qty_selector_onchange()" style="width: 80px">
+              <option value="1">1</value>
+              <option value="2">2</value>
+              <option value="3">3</value>
+            </select>
+        </div>
+    </div>
+    
+    
+    <div class="row pt-1" id="cat01_seq01_int01_mainrow">
+        <div class="col-md-11">
+            <div class="content-section">
+                <input class="form-control collapse" type="number" id="cat01_seq01_int01_active" value="1">
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        Intention Actor
+                    </div>
+                    <div class="col-md-10">
+                        
+                        <div id="cat01_seq01_int01_actor_input_area">
+                        </div>
+                        
+                        <!--Define new actor <input class='form-control' id="cat01_seq01_int01_new_actor_input" type="text" size="8">-->
+                        
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        Intention Predicate
+                    </div>
+                    <div class="col-md-6">
+                        <div id="cat01_seq01_int01_defstr_area">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        
+                    </div>
+                    <div class="col-md-8">
+                        <div id="cat01_seq01_int01_inputarea" class="content-section">
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        Required predicates at end of chapter
+                    </div>
+                    <div class="col-md-8">
+                        <div id="cat01_seq01_int01_inputarea" class="content-section">
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row collapse" id="cat01_seq01_int02_mainrow">
+        <div class="col-md-11">
+            <div class="content-section">
+                <input class="form-control collapse" type="number" id="cat01_seq01_int02_active" value="0">
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        Intention Actor
+                    </div>
+                    <div class="col-md-10">
+                        <div id="cat01_seq01_int02_actor_input_area">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        Intention Predicate
+                    </div>
+                    <div class="col-md-6">
+                        <div id="cat01_seq01_int02_defstr_area">
+                        </div>
+
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        
+                    </div>
+                    <div class="col-md-8">
+                        <div id="cat01_seq01_int02_inputarea" class="content-section">
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row collapse" id="cat01_seq01_int03_mainrow">
+        <div class="col-md-11">
+            <div class="content-section">
+                <input class="form-control collapse" type="number" id="cat01_seq01_int03_active" value="0">
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        Intention Actor
+                    </div>
+                    <div class="col-md-10">
+                        <div id="cat01_seq01_int03_actor_input_area">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        Intention Predicate
+                    </div>
+                    <div class="col-md-6">
+                        <div id="cat01_seq01_int03_defstr_area">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        
+                    </div>
+                    <div class="col-md-8">
+                        <div id="cat01_seq01_int03_inputarea" class="content-section">
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="content-section">
+    <div class="row">
+        <div class="btn-group">
+        <button type="button" class="btn btn-info btn-sm" id="submit_category_instance" onclick="submit_category_instance_onclick();">Add Sequence Term</button>
+        </div>
+    </div>
+</div>
+    
+
+{% endblock content %}

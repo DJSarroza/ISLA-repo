@@ -1,0 +1,22 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+
+
+    <script type=text/javascript>
+        
+    </script>
+    
+    {% for somenarrative in narratives %}
+    <div class="row pt-1">
+      <div class="col-md-8">
+      
+      
+      
+      <a href="{{ url_for('narrative_instance',narrative_instance_id=somenarrative[0]) }}" target="_blank">{{ somenarrative[0] }}</a> : {{ somenarrative[1] }}
+      </div>
+    </div>
+    
+    {% endfor %}
+
+{% endblock content %}

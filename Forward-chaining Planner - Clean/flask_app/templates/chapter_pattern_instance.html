@@ -1,0 +1,81 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+<script>
+document.getElementById("main-nav-link-ncs").className += " active";
+</script>
+
+<!-- [ Header ] -->
+<div class="content-section">
+    <div class="row form-group">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-3">
+        
+        </div>
+        <div class="col-md-5">
+        </div>
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-1">
+        </div>
+    </div>
+</div>
+
+<!-- [ Chapter Sequence Body ] -->
+<div class="content-section">
+    <div class="row">
+        <div class="col-md-2">
+          <div class="font-weight-bold">
+          Chapter Pattern:
+          </div>
+        {{ chapter_pattern_group[1] }}  
+        
+        {% if chapter_pattern_group[2] != "" %}
+            - {{ chapter_pattern_group[2] }}
+        {% endif %}
+        
+        [{{ chapter_pattern_group[3] }}]
+        
+        </div>
+        <div class="col-md-8">
+          <div class="font-weight-bold">
+          Chapter Sequence:
+          </div>
+        {% for chapter_pattern_chapter_instance in chapter_pattern_chapters %}
+            <span>[ {{ chapter_pattern_chapter_instance.sequence_term_cat_label }} ] </span>
+        {% endfor %}
+        </div>
+        <div class="col-md-2">
+        
+        </div>
+    </div>
+</div>
+
+<!-- [ Chapter Information ] -->
+<div class="content-section">
+    <div class="row">
+    
+        {% for chapter_pattern_chapter_instance in chapter_pattern_chapters %}
+        <div class="col-md-2">
+            <div class="content-section small">
+                {{ chapter_pattern_chapter_instance.sequence_term_cat_label }}
+                <hr>
+                
+                {% for sequence_term_instance in sequence_terms %}
+                    {% if sequence_term_instance.sequence_term_cat_label == chapter_pattern_chapter_instance.sequence_term_cat_label %}
+                        {{ sequence_term_instance.main_label }} <br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+
+    </div>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,277 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+<script>
+document.getElementById("main-nav-link-ncs").className += " active";
+</script>
+
+
+<script>
+
+
+    function add_name_button_onclick(){
+    
+    
+        input_domain            = document.getElementById("new_name_domain").value
+        input_readable_label    = document.getElementById("new_name_readable_label").value
+        input_object_type       = document.getElementById("new_name_object_type").value
+        input_attribute1        = document.getElementById("new_name_attribute1").value
+        input_attribute2        = document.getElementById("new_name_attribute2").value
+        input_attribute3        = document.getElementById("new_name_attribute3").value
+        
+        $.getJSON($SCRIPT_ROOT + '/_add_object_name', {
+            domain_full_label   : input_domain          ,
+            readable_label      : input_readable_label  ,
+            object_type         : input_object_type     ,
+            attribute1          : input_attribute1      ,
+            attribute2          : input_attribute2      ,
+            attribute3          : input_attribute3      
+                
+        }, function(data) {
+        
+            $.getJSON($SCRIPT_ROOT + '/_get_object_names', {
+                domain_full_label   :  document.getElementById("filter_domain_full_label").value 
+            }, function(data) {
+            
+                object_names_result = data.result
+                
+                update_main_table_tbody(object_names_result)
+            });
+        });
+    
+    }
+    
+    function filter_domain_full_label_onchange(){
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_object_names', {
+            domain_full_label   :  document.getElementById("filter_domain_full_label").value 
+        }, function(data) {
+        
+            object_names_result = data.result
+            
+            update_main_table_tbody(object_names_result)
+        });
+    }
+    
+    function update_main_table_tbody(object_names_result){
+    
+        output_HTML = ""
+        
+        raw_rows = object_names_result.split("/|")
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 9){
+                output_HTML = output_HTML + "<tr> "      + "\n"
+                
+                output_HTML = output_HTML + "   <td class='small'>"+split_row[0]+"</td>\n"
+                output_HTML = output_HTML + "   <td class='small'>"+split_row[1]+"</td>\n"
+                output_HTML = output_HTML + "   <td class='small'>"+split_row[2]+"</td>\n"
+                output_HTML = output_HTML + "   <td class='small'>"+split_row[3]+"</td>\n"
+                output_HTML = output_HTML + "   <td class='small'>"+split_row[4]+"</td>\n"
+                
+                if(split_row[5] == "None"){
+                    output_HTML = output_HTML + "   <td class='small'><span class='text-muted font-italic'>NONE</span></td>\n"
+                }else{
+                    output_HTML = output_HTML + "   <td class='small'>"+split_row[5]+"</td>\n"
+                }
+                
+                if(split_row[6] == "None"){
+                    output_HTML = output_HTML + "   <td class='small'><span class='text-muted font-italic'>NONE</span></td>\n"
+                }else{
+                    output_HTML = output_HTML + "   <td class='small'>"+split_row[6]+"</td>\n"
+                }
+
+                if(split_row[7] == "None"){
+                    output_HTML = output_HTML + "   <td class='small'><span class='text-muted font-italic'>NONE</span></td>\n"
+                }else{
+                    output_HTML = output_HTML + "   <td class='small'>"+split_row[7]+"</td>\n"
+                }
+                
+                output_HTML = output_HTML + "</tr> "      + "\n"
+            }
+        }
+        
+        document.getElementById("object_names_table_tbody").innerHTML = output_HTML
+        
+    }
+    
+    function new_name_domain_onchange(){
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_objecttypes', {
+            domain_id   :  document.getElementById("new_name_domain").value 
+        }, function(data) {
+        
+            object_types_result = data.result
+            
+            update_new_name_object_type(object_types_result)
+        });
+    }
+    
+    function update_new_name_object_type(object_types_result){
+    new_name_object_type
+    
+        output_HTML = ""
+        
+        raw_rows = object_types_result.split("/|")
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 7){
+                output_HTML = output_HTML + "<option value='"+split_row[2]+"'>"+split_row[2]+"</option>\n"
+            }
+        }
+        
+        document.getElementById("new_name_object_type").innerHTML = output_HTML
+        
+    }
+    
+    function new_name_object_type_onchange(){
+    
+    }
+
+</script>
+
+
+<div class="content-section">
+    <div class="row form-group">
+        <div class="col-md-4">
+            <h3 class="display-5">Object Names</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            </div>
+        </div>
+        <div class="col-md-6">
+
+            
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-8">
+        Customize object names for specific domains
+        </div>
+    </div>
+</div>
+
+
+<div class="content-section">
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Domain
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="filter_domain_full_label" onchange="filter_domain_full_label_onchange()">
+                <option value="">--All--</option>
+                {% for somedomain in loadable_domains %}
+                <option value="{{ somedomain.domain_full_label }}">{{ somedomain.readable_label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="content-section">
+    <table class="table table-hover" id="object_names_table">
+        <thead class="thead-dark small" id="object_names_table_thead">
+            <tr>
+                <th class="align-top"> ID             </th>
+                <th class="align-top"> Domain         </th>
+                <th class="align-top"> Main Label     </th>
+                <th class="align-top"> Readable Label </th>
+                <th class="align-top"> Object Type    </th>
+                <th class="align-top"> Attribute1     </th>
+                <th class="align-top"> Attribute2     </th>
+                <th class="align-top"> Attribute3     </th>
+                <th class="align-top"> status         </th>
+            </tr>
+            <tr >
+                <td> 
+                    <button class="btn btn-info btn-sm" type="button" onclick="alert('Potat Clear!')">Clear</button>
+                </td>
+                
+                <td>
+                    <select class="form-control form-control-sm" id="new_name_domain" onchange="new_name_domain_onchange()">
+                        <option value="">--Select one--</option>
+                        {% for somedomain in loadable_domains %}
+                        <option value="{{ somedomain.id }}">{{ somedomain.readable_label }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <td>
+                    <input class="form-control form-control-sm" disabled>
+                </td>
+                
+                <td>
+                    <input class="form-control form-control-sm" id="new_name_readable_label">
+                </td>
+                
+                <td>
+                    <select class="form-control form-control-sm" id="new_name_object_type" onchange="new_name_object_type_onchange()">
+                        <option value="">--Select one--</option>
+                        </option>
+                    </select>
+                </td>
+                
+                <td>
+                    <input class="form-control form-control-sm" id="new_name_attribute1">
+                </td>
+                
+                <td>
+                    <input class="form-control form-control-sm" id="new_name_attribute2">
+                </td>
+                
+                <td>
+                    <input class="form-control form-control-sm" id="new_name_attribute3">
+                </td>
+                
+                <td>
+                    <button class="btn btn-info btn-sm" type="button" onclick="add_name_button_onclick()">Add</button>
+                </td>
+            </tr>
+            
+        </thead>    
+        
+        <tbody id="object_names_table_tbody">
+            {% for somename in object_names %}
+            <tr>
+                <td class="small"> {{ somename.id }}                </td>
+                <td class="small"> {{ somename.domain }}            </td>
+                <td class="small"> {{ somename.main_label }}        </td>
+                <td class="small"> {{ somename.readable_label }}    </td>
+                <td class="small"> {{ somename.object_type }}       </td>
+                
+                <td class="small">
+                {% if somename.attribute1 is none %}
+                    <span class="text-muted font-italic">NONE</span>
+                {% else %}
+                    {{ somename.attribute1 }}
+                {% endif %}
+                </td>
+                 
+                <td class="small">
+                {% if somename.attribute2 is none %}
+                    <span class="text-muted font-italic">NONE</span>
+                {% else %}
+                    {{ somename.attribute2 }}
+                {% endif %}
+                </td>
+                
+                <td class="small">
+                {% if somename.attribute3 is none %}
+                    <span class="text-muted font-italic">NONE</span>
+                {% else %}
+                    {{ somename.attribute3 }}
+                {% endif %}
+                </td>
+                
+                
+                <td class="small">  </td>
+            </tr> 
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,8 @@
+['swamp', 'location']|['plains', 'location']
+['plains', 'location']|['swamp', 'location']
+['mountain', 'location']|['plains', 'location']
+['plains', 'location']|['mountain', 'location']
+['mountain', 'location']|['island', 'location']
+['island', 'location']|['mountain', 'location']
+['forest', 'location']|['island', 'location']
+['island', 'location']|['forest', 'location']

@@ -1,0 +1,6 @@
+2020-12-12 18:40:04.995485 search_space: [1]  || bfs_queue: [0] || remaining_goals: [1] || 
+[['intends', ['Kiana', 'person'], [['has', ['Kiana', 'person'], ['Powerful_Hat', 'mcguffin']], 'predicate']]]
+2020-12-12 18:40:06.677819 search_space: [2]  || bfs_queue: [0] || remaining_goals: [0] || 
+[]
+2020-12-12 19:16:34.655762 search_space: [1]  || bfs_queue: [0] || remaining_goals: [0] || 
+[]

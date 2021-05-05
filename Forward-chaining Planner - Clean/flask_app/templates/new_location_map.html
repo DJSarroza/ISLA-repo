@@ -1,0 +1,897 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+
+
+
+
+
+<script>
+document.getElementById("main-nav-link-ncs").className += " active";
+</script>
+
+
+
+
+<script type="text/javascript">
+
+    /*------------------------------------
+        General scripts area
+    ------------------------------------*/
+
+    function containsNode(nodes, node_obj){
+        for(var i=0; i<nodes.length; i++){
+            if(nodes[i].id == node_obj.id){
+                return(true)
+            }
+        }
+        return(false)
+    }
+    
+    function containsEdge(edges, edge_obj){
+        for(var i=0; i<edges.length; i++){
+            
+            if((edges[i].from.id == edge_obj.from.id) && (edges[i].to.id == edge_obj.to.id)){
+                //alert(edges.length)
+                console.log(edges[i].from.id + " == " + edge_obj.from.id + "  || " + edge_obj)
+                console.log(edges[i].to.id + " == " + edge_obj.to.id + "  || " + edge_obj)
+                return(true)
+            }
+        }
+        return(false)
+    }
+
+    function add_node_onclick(){
+        has_error = false
+        
+        map_readable_label  = document.getElementById("map_readable_label").value
+        visibility          = document.getElementById("map_visibility").value
+        notes               = document.getElementById("map_notes").value
+                
+        node_readable_label = document.getElementById("node_readable_label").value
+        node_label          = document.getElementById("node_label").value
+        description         = document.getElementById("node_description").value
+        node_type           = document.getElementById("node_location_type").value
+        
+        if(map_readable_label == ""){
+            message_text = "Missing required field in Map Information area: Map Label"
+            add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+            has_error = true
+        }
+        if(node_readable_label == ""){
+            message_text = "Missing required field in Node Information area: Node Label"
+            add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+            has_error = true
+        }
+        
+        if(has_error){
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }else{
+        
+            $.getJSON($SCRIPT_ROOT + '/_add_location_map', {
+                map_readable_label  : map_readable_label  ,
+                visibility          : visibility          ,
+                notes               : notes             
+            }, function(data) {
+                //update_map_information()
+            });
+            
+            $.getJSON($SCRIPT_ROOT + '/_add_location_node', {
+                map_readable_label  : map_readable_label  ,
+                node_readable_label : node_readable_label ,
+                node_label          : node_label,
+                description         : description,
+                node_type           : node_type
+            }, function(data) {
+                update_edge_input(data.result)
+            });
+            
+            //$.getJSON($SCRIPT_ROOT + '/_add_location_edges', {
+            //    sequence_term_cat_label : sequence_term_cat_label
+            //}, function(data) {
+            //
+            //
+            //});
+            
+            //CHECK IF ALREADY IN THERE
+            new_node = {
+                id      :node_label,
+                label   :node_readable_label
+            }
+            if(!containsNode(nodes, new_node)){
+                nodes.push(new_node)
+                
+                data = {
+                nodes: nodes,
+                edges: edges,
+                }
+                //network = new vis.Network(container, data, options)
+                spawnNetworkObject()
+            }
+            
+
+        }
+    }
+
+    function add_edge_onclick(){
+        has_error = false
+        blank_flag = false
+        
+        from_node = document.getElementById("from_node").value
+        to_node   = document.getElementById("to_node").value
+        
+        if(from_node == ""){
+            message_text = "Missing required field in edge area: From Node"
+            add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+            has_error = true
+            blank_flag = true
+        }
+        if(to_node == ""){
+            message_text = "Missing required field in edge area: To Node"
+            add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+            has_error = true
+            blank_flag = true
+        }
+        if((from_node == to_node) && (!blank_flag)){
+            message_text = "From node should be different from to node"
+            add_flash_message(message_text,"danger","default","header_flash_message_area","top")
+            has_error = true
+        }
+        
+        if(has_error){
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }else{
+            
+            bidirectional = document.getElementById("bidirectional").checked
+            
+            if(bidirectional){
+            
+                // Edge 1
+                $.getJSON($SCRIPT_ROOT + '/_add_location_edges', {
+                    map_label   : document.getElementById("map_label").value    ,
+                    from_node   : document.getElementById("from_node").value    ,
+                    to_node     : document.getElementById("to_node").value
+                }, function(data) {
+                    //update_map_information()
+                    if(data.result == "new"){
+                        //alert("BI - Edge 1 - ok")
+                        var new_edge = {
+                            id  :from_node + "_to_" + to_node,
+                            from:from_node,
+                            to  :to_node
+                        }
+                        edges.push(new_edge)
+                        
+                        data = {
+                        nodes: nodes,
+                        edges: edges,
+                        };
+                        
+                        // Edge 2
+                        $.getJSON($SCRIPT_ROOT + '/_add_location_edges', {
+                            map_label   : document.getElementById("map_label").value    ,
+                            from_node   : document.getElementById("to_node").value    ,
+                            to_node     : document.getElementById("from_node").value
+                        }, function(data) {
+                            //update_map_information()
+                            if(data.result == "new"){
+                                //alert("BI - Edge 2 - ok")
+                                var new_edge = {
+                                    id  :to_node + "_to_" + from_node,
+                                    from:to_node,
+                                    to  :from_node
+                                }
+                                edges.push(new_edge)
+                                
+                                data = {
+                                nodes: nodes,
+                                edges: edges,
+                                };
+                                spawnNetworkObject()
+                            }else{
+                                //alert("BI - Edge 2 - not ok")
+                            }
+                        });
+                    }else{
+                        //alert("BI - Edge 1 - not ok")
+                        // Edge 2
+                        /*
+                        $.getJSON($SCRIPT_ROOT + '/_add_location_edges', {
+                            map_label   : document.getElementById("map_label").value    ,
+                            from_node   : document.getElementById("to_node").value    ,
+                            to_node     : document.getElementById("from_node").value
+                        }, function(data) {
+                            //update_map_information()
+                            if(data.result == "new"){
+                                alert("BI - Edge 2 - ok")
+                                var new_edge = {
+                                    id  :to_node + "_to_" + from_node,
+                                    from:to_node,
+                                    to  :from_node
+                                }
+                                edges.push(new_edge)
+                                
+                                data = {
+                                nodes: nodes,
+                                edges: edges,
+                                };
+                                spawnNetworkObject()
+                            }else{
+                                alert("BI - Edge 2 - not ok")
+                            }
+                        });
+                        */
+                    }
+                });
+            
+            }else{
+                $.getJSON($SCRIPT_ROOT + '/_add_location_edges', {
+                    map_label   : document.getElementById("map_label").value    ,
+                    from_node   : document.getElementById("from_node").value    ,
+                    to_node     : document.getElementById("to_node").value
+                }, function(data) {
+                    //update_map_information()
+                    if(data.result == "new"){
+                        var new_edge = {
+                            id  :from_node + "_to_" + to_node,
+                            from:from_node,
+                            to  :to_node
+                        }
+                        edges.push(new_edge)
+                        
+                        //alert("Updated Edges")
+                        data = {
+                        nodes: nodes,
+                        edges: edges,
+                        };
+                        //network = new vis.Network(container, data, options);
+                        spawnNetworkObject()
+                    }
+                });
+            }
+            
+        }
+    }
+    
+    function update_map_display(locationnodes_str,locationadj_str){
+    
+        nodes = []
+        raw_rows = locationnodes_str.split("/|")
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            if(split_row.length == 7){
+                somenode_id             = split_row[0]
+                somenode_map_label      = split_row[1]
+                somenode_node_label     = split_row[2]
+                somenode_readable_label = split_row[3]
+                somenode_description    = split_row[4]
+                
+                var new_node = {
+                    id      :somenode_node_label,
+                    label   :somenode_readable_label
+                }
+                nodes.push(new_node)
+            }
+        }
+        
+        edges = []
+        
+        raw_rows = locationadj_str.split("/|")
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            if(split_row.length == 5){
+                someedge_id        = split_row[0]
+                someedge_map_label = split_row[1]
+                someedge_from_node = split_row[2]
+                someedge_to_node   = split_row[3]
+            
+                var new_edge = {
+                    id:someedge_from_node + "_to_" + someedge_to_node,
+                    from:someedge_from_node,
+                    to  :someedge_to_node
+                }
+                edges.push(new_edge)
+            }
+        }
+        
+        data = {
+        nodes: nodes,
+        edges: edges,
+        }
+        //network = new vis.Network(container, data, options)
+        spawnNetworkObject()
+        message_text = "Map has been loaded"
+        add_flash_message(message_text,"success","default","map_display_flash_message_area","none")
+    }
+    
+    function update_edge_input(locationresult_str){
+        
+        //    FROM NODE
+        output_HTML = ""
+        output_HTML += "       <select class='form-control' id='from_node' onchange='edge_onchange();'>\n"
+        output_HTML += "       <option value=''>--Select one--</option>\n"
+        raw_rows = locationresult_str.split("/|")
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            if(split_row.length == 7){
+                output_HTML += "       <option value='"+split_row[2]+"'>"+split_row[3]+" ("+split_row[6]+")"+"</option>\n"
+            }
+        }
+        output_HTML += "       </select>\n"
+        document.getElementById("from_node_input_area").innerHTML = output_HTML
+        
+        //    TO NODE
+        output_HTML = ""
+        output_HTML += "       <select class='form-control' id='to_node' onchange='edge_onchange();'>\n"
+        output_HTML += "       <option value=''>--Select one--</option>\n"
+        raw_rows = locationresult_str.split("/|")
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            if(split_row.length == 7){
+                
+                output_HTML += "       <option value='"+split_row[2]+"'>"+split_row[3]+" ("+split_row[6]+")"+"</option>\n"
+                
+            }
+        }
+        output_HTML += "       </select>\n"
+        document.getElementById("to_node_input_area").innerHTML = output_HTML
+    }
+    
+    function edge_onchange(){
+        //from_node = document.getElementById("from_node").value
+        //to_node   = document.getElementById("to_node").value
+        //if(from_node == to_node){
+        //    //alert("No.")
+        //    //document.getElementById("adjacent_to").value = ""
+        //}
+    }
+        
+    function update_location_map_info(locationresult_str){
+        raw_rows = locationresult_str.split("/|")
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            if(split_row.length == 9){
+                id              = split_row[0]
+                map_label       = split_row[1]
+                readable_label  = split_row[2]
+                visibility      = split_row[3]
+                status          = split_row[4]
+                notes           = split_row[5]
+                created_by      = split_row[6]
+                last_edited_by  = split_row[7]
+                
+                document.getElementById("map_label").value          = map_label
+                document.getElementById("map_readable_label").value = readable_label
+                document.getElementById("map_visibility").value     = visibility
+                document.getElementById("map_notes").value          = notes
+            }
+        }
+    }
+        
+    function load_map_label_onchange(){
+    
+        load_map_label = document.getElementById("load_map_label").value
+        
+        if(load_map_label != ""){
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_location_map', {
+                map_label  : load_map_label
+            }, function(data) {
+                update_location_map_info(data.result)
+            });
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_location_nodes', {
+                map_label  : load_map_label
+            }, function(data) {
+                locationnodes_str = data.result
+                
+                $.getJSON($SCRIPT_ROOT + '/_get_location_edges', {
+                    map_label  : load_map_label
+                }, function(data) {
+                    update_edge_input(locationnodes_str)
+                    locationadj_str = data.result
+                    update_map_display(locationnodes_str,locationadj_str)
+                    
+                });
+            });
+        }
+    }
+        
+    function map_readable_label_onchange(){
+        map_readable_label = document.getElementById("map_readable_label").value
+        map_label = smallify(map_readable_label)
+        document.getElementById("map_label").value = map_label
+    }
+        
+    function node_readable_label_onchange(){
+        node_readable_label = document.getElementById("node_readable_label").value
+        node_label = smallify(node_readable_label)
+        document.getElementById("node_label").value = node_label
+    }
+        
+    function delete_selected(){
+        
+        
+        //edges.remove([selected_edge]);
+        
+        selected_node = document.getElementById("selected_node").value
+        selected_edge = document.getElementById("selected_edge").value
+        map_label     = document.getElementById("map_label").value
+        
+        //alert(selected_node + " // " + selected_edge)
+        
+        
+        if(selected_node != ""){
+            
+            new_nodes = []
+            for(var i=0;i<nodes.length;i++){
+                if(nodes[i].id == selected_node){
+                    //alert("AHA! " + selected_edge)
+                }else{
+                    new_nodes.push(nodes[i])
+                }
+            }
+            nodes = new_nodes
+            
+            connected_edges = network.getConnectedEdges(selected_node)
+            new_edges = []
+            for(var i=0;i<edges.length;i++){
+                if(connected_edges.includes(edges[i].id)){
+                    //alert("AHA! " + selected_edge)
+                }else{
+                    new_edges.push(edges[i])
+                }
+            }
+            edges = new_edges
+            
+            
+            $.getJSON($SCRIPT_ROOT + '/_delete_location_node', {
+                node_id  : selected_node
+            }, function(data) {
+                
+            });
+            
+        }
+        
+        if(selected_edge != ""){
+            new_edges = []
+            for(var i=0;i<edges.length;i++){
+                if(edges[i].id == selected_edge){
+                    //alert("AHA! " + selected_edge)
+                }else{
+                    new_edges.push(edges[i])
+                }
+            }
+            edges = new_edges
+            
+            $.getJSON($SCRIPT_ROOT + '/_delete_location_edge', {
+                edge_str  : selected_edge,
+                map_label : map_label
+            }, function(data) {
+                
+            });
+        }
+        
+        //alert(selected_edge)
+        //alert(edges.get(selected_edge).to)
+        //network.deleteSelected()
+        
+        data = {
+        nodes: nodes,
+        edges: edges,
+        };
+        //network = new vis.Network(container, data, options);
+        spawnNetworkObject()
+        
+        
+    }
+
+    function domain_id_onchange(){
+    
+        $.getJSON($SCRIPT_ROOT + '/_get_objecttypes_of_type', {
+            domain_id       : document.getElementById("domain_id").value,
+            ancestor_type   : "location"
+        }, function(data) {
+            update_location_type_container(data.result)
+        });
+    }
+    
+    function update_location_type_container(raw_result){
+        
+        output_HTML = ""
+        output_HTML = output_HTML + "<select class='form-control' id='node_location_type'>\n"
+        raw_rows = raw_result.split("/|")
+        
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            if(split_row.length == 7){
+                output_HTML = output_HTML + "<option value='"+split_row[2]+"'>"+split_row[2]+"</option>"
+            
+            }
+        }
+        output_HTML = output_HTML + "</select>\n"
+        
+        document.getElementById("location_type_container").innerHTML = output_HTML
+        
+    }
+
+</script>
+
+<div class="content-section">
+    <div class="row pt-1">
+        <div class="col-md-8">
+            <h3 class="display-5">Add New Location Node Map</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!--Extra area-->
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-8">
+        Location editor
+        </div>
+    </div>
+</div>
+
+<!-- MAP INPUT AREA -->
+<div class="content-section">
+    <div class="row form-group">
+        <div class="col-md-8">
+            <h3 class="display-5">Map Information</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!--Extra area-->
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-12 small text-info font-italic">
+        Create a new map
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Map Label
+        </div>
+        <div class="col-md-6">
+            <input class="form-control" id="map_readable_label" type="text" size="12" onchange="map_readable_label_onchange()">
+            <input class="form-control" id="map_label" type="hidden">
+        </div>
+    </div>
+    
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Visibility
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="map_visibility">
+              <option value="PRIVATE-WRITE">Private</option>
+              <option value="PUBLIC-READONLY">Public - Read Only</option>
+              <option value="PUBLIC-WRITE">Public - Full Privileges</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Notes
+        </div>
+        <div class="col-md-6">
+            <textarea class="form-control" id="map_notes" rows="3" cols="30"></textarea>
+        </div>
+    </div>
+    
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Domain
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="domain_id" onchange="domain_id_onchange()">
+                <option value=""></option>
+                {% for somedomain in loadable_domains %}
+                <option value="{{ somedomain.id }}">{{ somedomain.readable_label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    
+    <div class="dropdown-divider"></div>
+    <div class="row pt-1">
+        <div class="col-md-12 small text-info font-italic">
+        ... or load an existing map
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Map Label
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="load_map_label" onchange="load_map_label_onchange()">
+                <option value="">--Select one--</option>
+                {% for somemap in loadable_maps %}
+                <option value="{{ somemap.map_label }}">{{ somemap.readable_label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- NODE INPUT AREA -->
+<div class="content-section">
+    <div class="row">
+        <!-- LEFT HALF -->
+        <div class="col-md-6">
+            <div class="row form-group">
+                <div class="col-md-8">
+                    <h3 class="display-5">Node Information</h3>
+                    <div class="small text-info font-italic">
+                    <!--*Tooltip area thingie-->
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <!--Extra area-->
+                </div>
+            </div>
+
+            <div class="row pt-1">
+                <div class="col-md-4">
+                    Node Label
+                </div>
+                <div class="col-md-6">
+                    <input class="form-control" id="node_readable_label" type="text" size="12" onchange="node_readable_label_onchange()">
+                    <input class="form-control" id="node_label" type="hidden" size="12">
+                </div>
+            </div>
+            <div class="row pt-1">
+                <div class="col-md-4">
+                    Location Type
+                </div>
+                <div class="col-md-6">
+                    <div id="location_type_container">
+                    <select class="form-control" id='node_location_type' disabled>
+                    <option>--Select domain first--</option>
+                    </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-1">
+                <div class="col-md-4">
+                    Description
+                </div>
+                <div class="col-md-6">
+                    <textarea class="form-control" id="node_description" rows="3" cols="30"></textarea>
+                </div>
+            </div>
+            <div class="row pt-1">
+                <div class="col-md-4">
+                    
+                </div>
+                <div class="col-md-6">
+                    <button type="button" 
+                            class="btn btn-info btn-sm" 
+                            id="add_node_button" 
+                            onclick="add_node_onclick();">
+                        Add Node
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- RIGHT HALF -->
+        <div class="col-md-6">
+            <div class="row form-group">
+                <div class="col-md-8">
+                    <h3 class="display-5">Graph Edge</h3>
+                    <div class="small text-info font-italic">
+                    <!--*Tooltip area thingie-->
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <!--Extra area-->
+                </div>
+            </div>
+            <div class="row pt-1">
+                <div class="col-md-4">
+                    Bi-directional
+                </div>
+                <div class="col-md-6 text-center">
+                    <input class="form-check-input" id="bidirectional" type="checkbox">
+                </div>
+            </div>
+            <div class="row pt-1">
+                <div class="col-md-4">
+                    From Node
+                </div>
+                <div class="col-md-6">
+                    <div id="from_node_input_area">
+                        <select class="form-control" id="from_node"disabled>
+                        <option value="">--Select one--</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-1">
+                <div class="col-md-4">
+                    To Node
+                </div>
+                <div class="col-md-6">
+                    <div id="to_node_input_area">
+                        <select class="form-control" id="to_node"disabled>
+                        <option value="">--Select one--</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row pt-1">
+                <div class="col-md-4">
+                    
+                </div>
+                <div class="col-md-6">
+                    <button type="button" 
+                            class="btn btn-info btn-sm" 
+                            id="add_node_button" 
+                            onclick="add_edge_onclick();">
+                        Add Edge
+                    </button>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+
+
+
+    
+
+</div>
+
+<!-- MAP DISPLAY AREA -->
+<div class="container-fluid">
+    <div id="map_display_flash_message_area">
+
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-md-3">
+        <div class="content-section" style="height:600px;">
+            <div id="delete_edge_input_area" class="">
+                <div class="row pt-1">
+                    <div class="col-md-12">
+                    <button type="button" 
+                            class="btn btn-info btn-sm" 
+                            id="delete_edge_button" 
+                            onclick="delete_selected();">
+                        Delete Selected
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="content-section" style="height:600px;">
+            <style type="text/css">
+            .vis-display {
+              display:block;
+              width:600px;
+              height:540px;
+              border:solid;
+              background-color:white;
+            }
+            </style>
+            <div class="vis-display" id="map_display">Network Graph</div>
+            
+        </div>
+        <input class="form-control" type="hidden" id="selected_node">
+        <input class="form-control" type="hidden" id="selected_edge">
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var nodes = [
+//       {
+//         id:"a",
+//         label:"A"
+//       },
+//       {
+//         id:"b",
+//         label:"B"
+//       }
+    ];
+    var edges = [
+//          {
+//            from:"a",
+//            to:"b"
+//           }
+    ];
+
+    var data = {
+    nodes: nodes,
+    edges: edges,
+    };
+    
+    var options = {
+        edges: {
+            arrows:'to'
+        },
+        layout: {
+            randomSeed: 101
+        }
+    };
+    //var container = document.querySelector('.network');
+    var container = document.getElementById('map_display')
+    //network = new vis.Network(container, data, options);
+    
+    document.getElementById("selected_edge").value = ""
+    document.getElementById("selected_node").value = ""
+    
+</script>
+
+
+<script type="text/javascript">
+
+    /*------------------------------------
+        Visjs events scripts area
+    ------------------------------------*/
+    
+    function spawnNetworkObject(){
+        
+        network = new vis.Network(container, data, options);
+        network.on("click", function (event_obj) {
+            /*
+            {
+              nodes: [Array of selected nodeIds],
+              edges: [Array of selected edgeIds],
+              event: [Object] original click event,
+              pointer: {
+                DOM: {x:pointer_x, y:pointer_y},
+                canvas: {x:canvas_x, y:canvas_y}
+              }
+            }
+            */
+            //alert(event_obj.nodes[0])
+            //alert(event_obj.edges[0])
+            
+            if(typeof event_obj.nodes[0]!== "undefined"){
+                document.getElementById("selected_edge").value = ""
+                document.getElementById("selected_node").value = event_obj.nodes[0]
+            }else{
+                if(typeof event_obj.edges[0]!== "undefined"){
+                    document.getElementById("selected_edge").value = event_obj.edges[0]
+                }else{
+                    document.getElementById("selected_edge").value = ""
+                }
+                document.getElementById("selected_node").value = ""
+            }
+        });
+        
+       //network.on("selectEdge", function (event_obj) {
+       //    /*
+       //    {
+       //      nodes: [Array of selected nodeIds],
+       //      edges: [Array of selected edgeIds],
+       //      event: [Object] original click event,
+       //      pointer: {
+       //        DOM: {x:pointer_x, y:pointer_y},
+       //        canvas: {x:canvas_x, y:canvas_y}
+       //      }
+       //    }
+       //    */
+       //    
+       //    document.getElementById("selected_edge").value = event_obj.edges[0]
+       //    document.getElementById("selected_node").value = ""
+       //    alert(event)
+       //});
+    
+    }
+</script>
+{% endblock content %}

@@ -1,0 +1,8 @@
+['centralpastures', 'location']|['northfields', 'location']
+['northfields', 'location']|['centralpastures', 'location']
+['centralpastures', 'location']|['southfields', 'location']
+['southfields', 'location']|['centralpastures', 'location']
+['centralpastures', 'location']|['easternglades', 'location']
+['easternglades', 'location']|['centralpastures', 'location']
+['northfields', 'location']|['easternglades', 'location']
+['easternglades', 'location']|['northfields', 'location']

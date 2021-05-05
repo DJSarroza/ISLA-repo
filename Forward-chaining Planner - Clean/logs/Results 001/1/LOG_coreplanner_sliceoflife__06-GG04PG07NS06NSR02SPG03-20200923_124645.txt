@@ -1,0 +1,112 @@
+2020-09-23 13:16:59.755949: Goal graph nodes: 13536
+2020-09-23 13:16:59.755949: Goal graph action inventory:
+	give_mundane_item:960
+	give_item:2400
+	take_thing:3600
+	pick_up_thing:400
+	rm_likes:64
+	friendly_act:480
+	befriend:240
+	move:480
+	rm_hates:64
+	rm_loves:64
+	rm_dislikes:64
+	rm_aloof:64
+	rm_confident:64
+	rm_embarassed:64
+	rm_indifferent:64
+	rm_popular:64
+	do_cool_thing:1200
+	rm_not_aloof:64
+	rm_not_confident:64
+	rm_not_embarassed:64
+	rm_not_indifferent:64
+	rm_not_popular:64
+	do_embarassing_thing:1200
+	do_elegant_thing:1200
+	unfriendly_act:480
+	--------------
+	13536
+2020-09-23 13:16:59.909493: [03...] Initializing planner . . .
+2020-09-23 13:16:59.910498 	 [raw][['likes', ['Agari', 'student'], ['Tadano', 'student']], ['has_thing', ['Agari', 'student'], ['Drink', 'mundane_thing']]]
+2020-09-23 13:16:59.912958 	 [+]['likes', ['Agari', 'student'], ['Tadano', 'student']]
+2020-09-23 13:16:59.912958 	 [+]['has_thing', ['Agari', 'student'], ['Drink', 'mundane_thing']]
+2020-09-23 13:18:00.413634 layer: 6; nodes: 55
+2020-09-23 13:19:51.422008 [Try #1]Plan graph generation execution time:
+2020-09-23 13:19:51.433976 	171.508053 second/s
+2020-09-23 13:19:51.433976 	2.85846755 minute/s
+2020-09-23 13:19:51.434974: Completed plan cycle: [03]
+2020-09-23 13:19:51.434974: Total nodes    : 145
+2020-09-23 13:19:51.434974: Goal nodes     : 0
+2020-09-23 13:19:51.434974: Author's Goals  : [['likes', ['Agari', 'student'], ['Tadano', 'student']], ['has_thing', ['Agari', 'student'], ['Drink', 'mundane_thing']]]
+2020-09-23 13:19:51.434974: Achieved intentions : 
+	['likes', ['Agari', 'student'], ['Tadano', 'student']]
+2020-09-23 13:19:51.435971: Achieved author's goals : 
+	['likes', ['Agari', 'student'], ['Tadano', 'student']]:144
+2020-09-23 13:19:51.435971: Action breakdown:
+	None:1
+	rm_likes:8
+	do_embarassing_thing:16
+	rm_confident:7
+	unfriendly_act:4
+	give_item:2
+	do_cool_thing:19
+	rm_not_popular:3
+	rm_loves:4
+	do_elegant_thing:14
+	rm_popular:7
+	rm_not_embarassed:10
+	move:17
+	rm_not_aloof:3
+	take_thing:1
+	befriend:2
+	rm_dislikes:3
+	pick_up_thing:7
+	rm_aloof:2
+	friendly_act:4
+	rm_hates:4
+	rm_embarassed:2
+	rm_not_indifferent:4
+	rm_indifferent:1
+2020-09-23 13:19:51.445944: [03...] Initializing planner . . .
+2020-09-23 13:19:51.446941 	 [raw][['likes', ['Agari', 'student'], ['Tadano', 'student']], ['has_thing', ['Agari', 'student'], ['Drink', 'mundane_thing']]]
+2020-09-23 13:19:51.447939 	 [+]['likes', ['Agari', 'student'], ['Tadano', 'student']]
+2020-09-23 13:19:51.448936 	 [+]['has_thing', ['Agari', 'student'], ['Drink', 'mundane_thing']]
+2020-09-23 13:20:01.660673 layer: 6; nodes: 17
+2020-09-23 13:20:53.063102 [Try #1]Plan graph generation execution time:
+2020-09-23 13:20:53.063102 	61.608181 second/s
+2020-09-23 13:20:53.063102 	1.0268030166666666 minute/s
+2020-09-23 13:20:53.063102: Completed plan cycle: [03]
+2020-09-23 13:20:53.063102: Total nodes    : 57
+2020-09-23 13:20:53.063102: Goal nodes     : 3
+2020-09-23 13:20:53.063102: Author's Goals  : [['likes', ['Agari', 'student'], ['Tadano', 'student']], ['has_thing', ['Agari', 'student'], ['Drink', 'mundane_thing']]]
+2020-09-23 13:20:53.063102: Achieved intentions : 
+	['likes', ['Agari', 'student'], ['Tadano', 'student']]
+	['has_thing', ['Agari', 'student'], ['Drink', 'mundane_thing']]
+2020-09-23 13:20:53.063102: Achieved author's goals : 
+	['likes', ['Agari', 'student'], ['Tadano', 'student']]:56
+	['has_thing', ['Agari', 'student'], ['Drink', 'mundane_thing']]:3
+2020-09-23 13:20:53.063102: Action breakdown:
+	None:1
+	rm_likes:4
+	pick_up_thing:7
+	rm_not_aloof:2
+	rm_popular:3
+	take_thing:4
+	rm_dislikes:1
+	rm_not_indifferent:3
+	rm_not_embarassed:1
+	do_elegant_thing:5
+	do_embarassing_thing:9
+	move:7
+	do_cool_thing:3
+	rm_aloof:1
+	befriend:1
+	rm_confident:1
+	rm_loves:1
+	give_item:1
+	friendly_act:1
+	rm_embarassed:1
+2020-09-23 13:20:53.485927: Solution for: None
+2020-09-23 13:20:53.960748: Solution for: None
+2020-09-23 13:20:54.423220: Solution for: None

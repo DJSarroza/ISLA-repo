@@ -1,0 +1,28 @@
+{% block content %}
+sep=;<br>
+First Name;
+Last Name;
+Email Address;
+Affiliate School;
+Subject;
+Number of Sections;
+Total Participants;
+Q-01;
+Q-02;
+Q-03;
+Date Created<br>
+{% for survey_instance in surveys%}
+    {{ survey_instance.first_name }};
+    {{ survey_instance.last_name }};
+    {{ survey_instance.email }};
+    {{ survey_instance.affiliate_school }};
+    {{ survey_instance.subject }};
+    {{ survey_instance.number_of_sections }};
+    {{ survey_instance.total_number_of_students }};
+    {{ survey_instance.assessment_question_01 }};
+    {{ survey_instance.assessment_question_02 }};
+    {{ survey_instance.assessment_question_03 }};
+    {{ survey_instance.date_created }}<br>
+{% endfor %}
+
+{% endblock content %}

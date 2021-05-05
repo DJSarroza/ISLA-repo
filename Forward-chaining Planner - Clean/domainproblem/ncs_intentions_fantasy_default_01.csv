@@ -1,0 +1,12 @@
+//,1,2,3,4,,,,,6,5,,,7,8,9,10,11,12,13
+//,Domain,Main Label,Secondary Label,Chapter Pattern,Grouping,Grouping_label,Series,Series_label,Intention Predicate Object Predicates,Intention Actor,Intention Predicate,Intention Full String,Likelihood,,,,,,
+,fantasy_default_01,Travel,,,01,fantasy_default_01_Travel_01,1,fantasy_default_01_Travel_01_1,(?actor - actor); (?destination - location),?actor,(at ?actor ?destination),(intends ?actor (at ?actor ?destination)),0.4,,,,,,
+,fantasy_default_01,ObtainItem,,,02,fantasy_default_01_ObtainItem_02,1,fantasy_default_01_ObtainItem_02_1,(?actor - actor); (?item - item),?actor,(has ?actor ?item),(intends ?actor (has ?actor ?item)),0.2,,,,,,
+,fantasy_default_01,InLove,,,03,fantasy_default_01_InLove_03,1,fantasy_default_01_InLove_03_1,(?actor - actor),?actor,(inlove ?actor),(intends ?actor (inlove ?actor)),0.2,,,,,,
+,fantasy_default_01,Married,as_proposer_generic,,04,fantasy_default_01_Married_as_proposer_generic_04,1,fantasy_default_01_Married_as_proposer_generic_04_1,(?actor - actor),?actor,(hasproposed ?actor),(intends ?actor (hasproposed ?actor)),0.2,,,,,,
+,fantasy_default_01,Married,as_proposer_generic,,04,fantasy_default_01_Married_as_proposer_generic_04,2,fantasy_default_01_Married_as_proposer_generic_04_2,(?actor - actor),?actor,(ismarried ?actor),(intends ?actor (ismarried ?actor)),0.2,,,,,,
+,fantasy_default_01,Married,as_proposer_specific,,05,fantasy_default_01_Married_as_proposer_specific_05,1,fantasy_default_01_Married_as_proposer_specific_05_1,(?actor - actor); (?proposee - creature),?actor,(hasproposedto ?actor ?proposee),(intends ?actor (hasproposedto ?actor ?proposee)),0.1,,,,,,
+,fantasy_default_01,Married,as_proposer_specific,,05,fantasy_default_01_Married_as_proposer_specific_05,2,fantasy_default_01_Married_as_proposer_specific_05_2,(?actor - actor); (?proposee - creature),?actor,(marriedto ?actor ?proposee),(intends ?actor (marriedto ?actor ?proposee)),0.1,,,,,,
+,fantasy_default_01,IntendsInjury,,,06,fantasy_default_01_IntendsInjury_06,1,fantasy_default_01_IntendsInjury_06_1,(?actor - actor); (?victim - creature),?actor,(isinjured ?victim),(intends ?actor (isinjured ?victim)),0.2,,,,,,
+,fantasy_default_01,HasWeapon,,,07,fantasy_default_01_HasWeapon_07,1,fantasy_default_01_HasWeapon_07_1,(?actor - actor),?actor,(hasweapon ?actor),(intends ?actor (hasweapon ?actor)),0.2,,,,,,
+,fantasy_default_01,Infect,,,08,fantasy_default_01_Infect_08,1,fantasy_default_01_Infect_08_1,(?actor - actor); (?victim - creature),?actor,(issick ?victim),(intends ?actor (issick ?victim)),0.2,,,,,,

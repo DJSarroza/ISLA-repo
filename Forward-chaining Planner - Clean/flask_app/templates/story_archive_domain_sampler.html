@@ -1,0 +1,145 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+
+
+    <script type=text/javascript>
+        
+        
+        function choose_domain_onclick(domain_full_label){
+        
+            $.getJSON($SCRIPT_ROOT + '/_get_narrative_instances_by_domain', {
+                
+                filter_mode                 : "ignore_no_map" ,
+                filter_parameter_domain     : domain_full_label ,
+                filter_parameter_quantity   : 10
+                
+            }, function(data) {
+                update_story_outlines_display_area(data.result)
+            });
+        }
+        
+        function update_story_outlines_display_area(raw_result){
+            
+            output_HTML = ""
+            
+            output_HTML = output_HTML + "        <table class='table table-hover small'>\n"
+            
+            output_HTML = output_HTML + "        <thead class='thead-dark'>\n"
+            output_HTML = output_HTML + "            <tr>\n"
+            output_HTML = output_HTML + "                <th class='align-top'>Narrative ID</th>\n"
+            output_HTML = output_HTML + "                <th class='align-top'>Narrative Label</th>\n"
+            output_HTML = output_HTML + "                <th class='align-top'>Chapter Pattern Label</th>\n"
+            output_HTML = output_HTML + "                <th class='align-top'>Description</th>\n"
+            output_HTML = output_HTML + "            </tr>\n"
+            output_HTML = output_HTML + "        </thead>\n"
+            
+            output_HTML = output_HTML + "        <tbody>\n"
+            
+            raw_rows = raw_result.split("/|")
+            for(var i=0; i<raw_rows.length; i++){
+                split_row = raw_rows[i].split("/;")
+                
+                if(split_row.length > 1){
+                    narrative_id                = split_row[0]
+                    narrative_label             = split_row[1]
+                    chapter_pattern_main_label  = split_row[2]
+                    chapter_pattern_sub_label   = split_row[3]
+                    chapter_pattern_description = split_row[4]
+                    
+                    output_HTML = output_HTML + "        <tr id=''>\n"
+                    
+                    
+                    
+                    output_HTML = output_HTML + "                <td>\n"
+                    //output_HTML = output_HTML + narrative_id                + "\n"
+                    output_HTML = output_HTML + "<a href='/narrative_instance/"+narrative_id+"' target='_blank'>"+narrative_id+"</a>\n"
+                    output_HTML = output_HTML + "                </td>\n"
+                    
+                    output_HTML = output_HTML + "                <td>\n"
+                    output_HTML = output_HTML + narrative_label             + "\n"
+                    output_HTML = output_HTML + "                </td>\n"
+                    
+                    output_HTML = output_HTML + "                <td>\n"
+                    output_HTML = output_HTML + chapter_pattern_main_label  + "\n"
+                    output_HTML = output_HTML + chapter_pattern_sub_label   + "\n"
+                    output_HTML = output_HTML + "                </td>\n"
+                    
+                    output_HTML = output_HTML + "                <td>\n"
+                    output_HTML = output_HTML + chapter_pattern_description + "\n"
+                    output_HTML = output_HTML + "                </td>\n"
+                }
+            }
+            
+            output_HTML = output_HTML + "        </tbody>\n"
+            output_HTML = output_HTML + "        </table>\n"
+            document.getElementById("story_outlines_display_area").innerHTML = output_HTML
+        }
+        
+    </script>
+    
+    <div class="row pt-1">
+      <div class="col-md-8">
+        <div class="">
+        Domain Sampler
+        </div>
+        
+      </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <hr>
+        </div>
+    </div>
+    
+    <!-- [1. DOMAIN] -------------->
+    <div class="row pt-1">
+      <div class="col-md-8">
+        <div class="">
+        
+        </div>
+        
+        <!-- images here -->
+        
+      </div>
+    </div>
+    
+    
+    
+    
+    <div class="row pt-1">
+      <div class="col-md-8">
+        
+        {% for somedomain in loadable_domains %}
+            <div class="pt-1">
+            <button type="button" class="btn btn-info" onclick="choose_domain_onclick('{{ somedomain.domain_full_label }}')"><i class="fas fa-caret-down"></i></button> {{ somedomain.readable_label }}: {{ somedomain.author_notes }} <br>
+            <!-- put links and images here -->
+            </div>
+        {% endfor %}
+        
+        
+        
+        
+      </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <hr>
+        </div>
+    </div>
+    
+
+    
+    <div class="row pt-1">
+      <div class="col-md-12">
+        <div class="" id="story_outlines_display_area">
+        </div>
+        
+        
+      </div>
+    </div>
+    
+    
+{% endblock content %}

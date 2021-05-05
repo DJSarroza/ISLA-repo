@@ -1,0 +1,49 @@
+2020-12-12 20:29:38.826340: Goal graph nodes: 9876
+2020-12-12 20:29:38.826340: Goal graph action inventory:
+	creaturegetsitemfromplace:480
+	creaturelosesitematplace:480
+	creaturegiveitemtocreature:2400
+	steal:2400
+	creaturekillcreature_withweapon:600
+	creaturekillcreature_noweapon:600
+	creatureinjurescreature_withweapon:600
+	creatureinjurescreature_noweapon:600
+	delegate_getquest:1200
+	move:480
+	creaturebleedsout:6
+	creaturebleedsout2:30
+	--------------
+	9876
+2020-12-12 20:29:38.836265: [02...] Initializing planner . . .
+2020-12-12 20:29:38.836265 	 [raw][['at', ['Ron', 'person'], ['forest', 'location']], ['alive', ['Ron', 'person']]]
+2020-12-12 20:29:38.836265 	 [+]['at', ['Ron', 'person'], ['forest', 'location']]
+2020-12-12 20:29:38.846297 	 [+]['alive', ['Ron', 'person']]
+2020-12-12 20:30:00.239954 layer: 6; nodes: 38
+2020-12-12 20:32:00.655265 layer: 7; nodes: 214
+2020-12-12 20:34:00.044416 layer: 7; nodes: 354
+2020-12-12 20:34:11.153244 [Try #1]Plan graph generation execution time:
+2020-12-12 20:34:11.154242 	272.304952 second/s
+2020-12-12 20:34:11.155240 	4.538415866666667 minute/s
+2020-12-12 20:34:11.156236: Completed plan cycle: [02]
+2020-12-12 20:34:11.156236: Total nodes    : 357
+2020-12-12 20:34:11.156236: Goal nodes     : 2
+2020-12-12 20:34:11.156236: Author's Goals  : [['at', ['Ron', 'person'], ['forest', 'location']], ['alive', ['Ron', 'person']]]
+2020-12-12 20:34:11.156236: Achieved intentions : 
+	['alive', ['Ron', 'person']]
+	['at', ['Ron', 'person'], ['forest', 'location']]
+2020-12-12 20:34:11.158230: Achieved author's goals : 
+	['alive', ['Ron', 'person']]:348
+	['at', ['Ron', 'person'], ['forest', 'location']]:2
+2020-12-12 20:34:11.159227: Action breakdown:
+	None:1
+	move:107
+	delegate_getquest:50
+	creatureinjurescreature_noweapon:39
+	creaturekillcreature_noweapon:42
+	creaturegiveitemtocreature:16
+	creaturelosesitematplace:19
+	creaturegetsitemfromplace:65
+	steal:12
+	creaturebleedsout:6
+2020-12-12 20:34:11.422804: Solution for: None
+2020-12-12 20:34:11.687537: Solution for: None

@@ -1,0 +1,55 @@
+2020-12-12 12:09:54.603237: Goal graph nodes: 10980
+2020-12-12 12:09:54.603237: Goal graph action inventory:
+	delegate_getquest:600
+	get_item_from_location:600
+	lose_item_at_location:600
+	give_item:3000
+	steal_item:3000
+	kill_withweapon:600
+	injure_withweapon:600
+	dummy_action1:25
+	modify_zca_pos:25
+	dummy_action3:10
+	travel:360
+	kill_noweapon:600
+	injure_noweapon:600
+	travel_from_sanctum:120
+	bleeds_out:30
+	bleeds_out2:30
+	dummy_action2:25
+	modify_zca_neg:25
+	dummy_action4:10
+	travel_to_sanctum:120
+	--------------
+	10980
+2020-12-12 12:09:54.634141: [03...] Initializing planner . . .
+2020-12-12 12:09:54.635138 	 [raw][['at', ['Michael', 'person'], ['mountains', 'location']], ['alive', ['Bob', 'creature']], ['alive', ['Kyle', 'person']], ['not', ['alive', ['Michael', 'person']]]]
+2020-12-12 12:09:54.641123 	 [+]['at', ['Michael', 'person'], ['mountains', 'location']]
+2020-12-12 12:09:54.641123 	 [+]['alive', ['Bob', 'creature']]
+2020-12-12 12:09:54.644148 	 [+]['alive', ['Kyle', 'person']]
+2020-12-12 12:09:54.645113 	 [-]['not', ['alive', ['Michael', 'person']]]
+2020-12-12 12:10:02.833754 layer: 3; nodes: 9
+2020-12-12 12:10:03.397034 [Try #1]Plan graph generation execution time:
+2020-12-12 12:10:03.397034 	8.748834 second/s
+2020-12-12 12:10:03.397034 	0.1458139 minute/s
+2020-12-12 12:10:03.397034: Completed plan cycle: [03]
+2020-12-12 12:10:03.397034: Total nodes    : 10
+2020-12-12 12:10:03.397034: Goal nodes     : 2
+2020-12-12 12:10:03.397034: Author's Goals  : [['at', ['Michael', 'person'], ['mountains', 'location']], ['alive', ['Bob', 'creature']], ['alive', ['Kyle', 'person']], ['not', ['alive', ['Michael', 'person']]]]
+2020-12-12 12:10:03.397034: Achieved intentions : 
+	['alive', ['Bob', 'creature']]
+	['alive', ['Kyle', 'person']]
+	['not', ['alive', ['Michael', 'person']]]
+	['at', ['Michael', 'person'], ['mountains', 'location']]
+2020-12-12 12:10:03.397034: Achieved author's goals : 
+	['alive', ['Bob', 'creature']]:10
+	['alive', ['Kyle', 'person']]:9
+	['not', ['alive', ['Michael', 'person']]]:4
+	['at', ['Michael', 'person'], ['mountains', 'location']]:5
+2020-12-12 12:10:03.397034: Action breakdown:
+	None:1
+	kill_noweapon:4
+	travel:2
+	injure_noweapon:3
+2020-12-12 12:10:03.498280: Solution for: None
+2020-12-12 12:10:03.582898: Solution for: None

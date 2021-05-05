@@ -1,0 +1,40 @@
+2020-12-12 22:22:59.110744: Goal graph nodes: 7326
+2020-12-12 22:22:59.110744: Goal graph action inventory:
+	delegate_getquest:900
+	creaturegetsitemfromplace:360
+	creaturelosesitematplace:360
+	creaturegiveitemtocreature:1800
+	steal:1800
+	creaturekillcreature_withweapon:450
+	creaturekillcreature_noweapon:450
+	creatureinjurescreature_withweapon:450
+	creatureinjurescreature_noweapon:450
+	creaturebleedsout:6
+	creaturebleedsout2:30
+	move:270
+	--------------
+	7326
+2020-12-12 22:22:59.141986: [01...] Initializing planner . . .
+2020-12-12 22:22:59.141986 	 [raw][['intends', ['Phillip', 'person'], [['has', ['Phillip', 'person'], ['Magic_Sphere', 'mcguffin']], 'predicate']], ['alive', ['Phillip', 'person']]]
+2020-12-12 22:22:59.141986 	 [+]['intends', ['Phillip', 'person'], [['has', ['Phillip', 'person'], ['Magic_Sphere', 'mcguffin']], 'predicate']]
+2020-12-12 22:22:59.157606 	 [+]['alive', ['Phillip', 'person']]
+2020-12-12 22:22:59.266964 layer: 0; nodes: 1
+2020-12-12 22:23:03.690098 [Try #1]Plan graph generation execution time:
+2020-12-12 22:23:03.690098 	4.532492 second/s
+2020-12-12 22:23:03.690098 	0.07554153333333334 minute/s
+2020-12-12 22:23:03.690098: Completed plan cycle: [01]
+2020-12-12 22:23:03.690098: Total nodes    : 3
+2020-12-12 22:23:03.690098: Goal nodes     : 2
+2020-12-12 22:23:03.690098: Author's Goals  : [['intends', ['Phillip', 'person'], [['has', ['Phillip', 'person'], ['Magic_Sphere', 'mcguffin']], 'predicate']], ['alive', ['Phillip', 'person']]]
+2020-12-12 22:23:03.690098: Achieved intentions : 
+	['alive', ['Phillip', 'person']]
+	['intends', ['Phillip', 'person'], [['has', ['Phillip', 'person'], ['Magic_Sphere', 'mcguffin']], 'predicate']]
+2020-12-12 22:23:03.690098: Achieved author's goals : 
+	['alive', ['Phillip', 'person']]:3
+	['intends', ['Phillip', 'person'], [['has', ['Phillip', 'person'], ['Magic_Sphere', 'mcguffin']], 'predicate']]:2
+2020-12-12 22:23:03.690098: Action breakdown:
+	None:1
+	delegate_getquest:1
+	move:1
+2020-12-12 22:23:03.736960: Solution for: None
+2020-12-12 22:23:03.830687: Solution for: None

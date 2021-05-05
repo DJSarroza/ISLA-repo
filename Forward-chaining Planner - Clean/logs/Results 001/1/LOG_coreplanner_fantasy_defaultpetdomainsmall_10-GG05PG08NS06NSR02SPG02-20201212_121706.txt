@@ -1,0 +1,66 @@
+2020-12-12 12:24:05.910224: Goal graph nodes: 10980
+2020-12-12 12:24:05.910224: Goal graph action inventory:
+	travel:360
+	delegate_getquest:600
+	get_item_from_location:600
+	lose_item_at_location:600
+	give_item:3000
+	steal_item:3000
+	kill_withweapon:600
+	kill_noweapon:600
+	injure_withweapon:600
+	injure_noweapon:600
+	dummy_action1:25
+	modify_zca_pos:25
+	dummy_action3:10
+	travel_from_sanctum:120
+	bleeds_out:30
+	bleeds_out2:30
+	dummy_action2:25
+	modify_zca_neg:25
+	dummy_action4:10
+	travel_to_sanctum:120
+	--------------
+	10980
+2020-12-12 12:24:05.940329: [05...] Initializing planner . . .
+2020-12-12 12:24:05.941327 	 [raw][['at', ['Kyle', 'person'], ['forest', 'location']], ['alive', ['Bob', 'creature']], ['at', ['Bob', 'creature'], ['forest', 'location']]]
+2020-12-12 12:24:05.941327 	 [+]['at', ['Kyle', 'person'], ['forest', 'location']]
+2020-12-12 12:24:05.942322 	 [+]['alive', ['Bob', 'creature']]
+2020-12-12 12:24:05.944318 	 [+]['at', ['Bob', 'creature'], ['forest', 'location']]
+2020-12-12 12:24:07.202748 layer: 0; nodes: 1
+2020-12-12 12:26:00.469576 layer: 6; nodes: 151
+2020-12-12 12:28:02.092685 layer: 7; nodes: 296
+2020-12-12 12:28:56.276516 [Try #1]Plan graph generation execution time:
+2020-12-12 12:28:56.276516 	290.32818 second/s
+2020-12-12 12:28:56.276516 	4.8388029999999995 minute/s
+2020-12-12 12:28:56.276516: Completed plan cycle: [05]
+2020-12-12 12:28:56.276516: Total nodes    : 351
+2020-12-12 12:28:56.276516: Goal nodes     : 2
+2020-12-12 12:28:56.276516: Author's Goals  : [['at', ['Kyle', 'person'], ['forest', 'location']], ['alive', ['Bob', 'creature']], ['at', ['Bob', 'creature'], ['forest', 'location']]]
+2020-12-12 12:28:56.276516: Achieved intentions : 
+	['alive', ['Bob', 'creature']]
+	['at', ['Bob', 'creature'], ['forest', 'location']]
+	['at', ['Kyle', 'person'], ['forest', 'location']]
+2020-12-12 12:28:56.276516: Achieved author's goals : 
+	['alive', ['Bob', 'creature']]:202
+	['at', ['Bob', 'creature'], ['forest', 'location']]:113
+	['at', ['Kyle', 'person'], ['forest', 'location']]:17
+2020-12-12 12:28:56.276516: Action breakdown:
+	None:1
+	delegate_getquest:42
+	steal_item:25
+	injure_noweapon:27
+	kill_noweapon:26
+	travel_to_sanctum:41
+	travel_from_sanctum:17
+	kill_withweapon:12
+	travel:34
+	bleeds_out:24
+	dummy_action2:44
+	lose_item_at_location:7
+	get_item_from_location:24
+	dummy_action3:9
+	injure_withweapon:14
+	give_item:4
+2020-12-12 12:28:56.468865: Solution for: None
+2020-12-12 12:28:56.620670: Solution for: None

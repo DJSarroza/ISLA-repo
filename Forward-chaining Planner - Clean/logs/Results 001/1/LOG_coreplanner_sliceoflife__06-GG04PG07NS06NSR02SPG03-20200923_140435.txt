@@ -1,0 +1,73 @@
+2020-09-23 14:56:50.540266: Goal graph nodes: 13536
+2020-09-23 14:56:50.540266: Goal graph action inventory:
+	unfriendly_act:480
+	befriend:240
+	rm_likes:64
+	move:480
+	give_mundane_item:960
+	rm_hates:64
+	rm_loves:64
+	give_item:2400
+	rm_dislikes:64
+	rm_aloof:64
+	rm_confident:64
+	rm_embarassed:64
+	rm_indifferent:64
+	rm_popular:64
+	take_thing:3600
+	pick_up_thing:400
+	do_cool_thing:1200
+	rm_not_aloof:64
+	rm_not_confident:64
+	rm_not_embarassed:64
+	rm_not_indifferent:64
+	rm_not_popular:64
+	do_embarassing_thing:1200
+	do_elegant_thing:1200
+	friendly_act:480
+	--------------
+	13536
+2020-09-23 14:56:50.883935: [05...] Initializing planner . . .
+2020-09-23 14:56:50.899555 	 [raw][['not', ['friends_with', ['Agari', 'student'], ['Tadano', 'student']]]]
+2020-09-23 14:56:50.899555 	 [-]['not', ['friends_with', ['Agari', 'student'], ['Tadano', 'student']]]
+2020-09-23 14:56:51.196359 layer: 0; nodes: 1
+2020-09-23 14:58:00.010782 layer: 5; nodes: 47
+2020-09-23 15:00:01.850171 layer: 6; nodes: 125
+2020-09-23 15:02:00.189773 layer: 5; nodes: 199
+2020-09-23 15:04:00.638845 layer: 6; nodes: 273
+2020-09-23 15:04:44.368776 [Try #1]Plan graph generation execution time:
+2020-09-23 15:04:44.368776 	473.469221 second/s
+2020-09-23 15:04:44.384397 	7.891153683333333 minute/s
+2020-09-23 15:04:44.384397: Completed plan cycle: [05]
+2020-09-23 15:04:44.384397: Total nodes    : 295
+2020-09-23 15:04:44.384397: Goal nodes     : 1
+2020-09-23 15:04:44.384397: Author's Goals  : [['not', ['friends_with', ['Agari', 'student'], ['Tadano', 'student']]]]
+2020-09-23 15:04:44.384397: Achieved intentions : 
+	['not', ['friends_with', ['Agari', 'student'], ['Tadano', 'student']]]
+2020-09-23 15:04:44.384397: Achieved author's goals : 
+	['not', ['friends_with', ['Agari', 'student'], ['Tadano', 'student']]]:1
+2020-09-23 15:04:44.384397: Action breakdown:
+	None:1
+	do_embarassing_thing:43
+	rm_not_aloof:4
+	take_thing:14
+	do_cool_thing:49
+	do_elegant_thing:40
+	move:59
+	pick_up_thing:19
+	rm_likes:6
+	rm_not_embarassed:6
+	rm_confident:10
+	befriend:7
+	rm_not_popular:4
+	rm_not_confident:4
+	rm_dislikes:6
+	rm_indifferent:3
+	rm_not_indifferent:5
+	rm_popular:3
+	rm_hates:4
+	rm_embarassed:3
+	rm_loves:1
+	rm_aloof:3
+	unfriendly_act:1
+2020-09-23 15:04:45.073810: Solution for: None

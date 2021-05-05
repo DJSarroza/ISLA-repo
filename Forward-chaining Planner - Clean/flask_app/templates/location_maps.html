@@ -1,0 +1,63 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+    <script>
+    
+    </script>
+    
+    <!----------- [ TOP MENU BAR ] -->
+    <div class="content-section">
+        <div class="btn-group">
+			<a href="{{ url_for('location_map_instance') }}" class="btn btn-info btn-sm">New</a>
+        </div>
+    </div>
+    
+    <div class="content-section">
+        <table class="table table-hover" id="object_names_table">
+            <thead class="thead-dark small" id="object_names_table_thead">
+                <tr>
+                    <th class="align-top"> ID               </th>
+                    <th class="align-top"> Readable Label   </th>
+                    <th class="align-top">  </th>
+                    <th class="align-top">  </th>
+                    
+                    <th class="align-top"> Notes            </th>
+                    <th class="align-top"> Visibility       </th>
+                    <th class="align-top"> Status           </th>
+                    <th class="align-top"> Actions          </th>
+                </tr>
+                
+            </thead>    
+            
+            <tbody id="object_names_table_tbody">
+                {% for somemap in loadable_maps %}
+                <tr>
+                    <td class="small"> {{ somemap.id }}                 </td>
+                    <td class="small"> 
+                        <a href="{{ url_for('location_map_instance',map_id=somemap.id) }}">
+                        {{ somemap.readable_label }}
+                        </a>
+                    </td>
+                    <td class="small">  </td>
+                    <td class="small">  </td>
+                    <td class="small">
+                    {% if somemap.notes is none %}
+                    {% else %}
+                        {{ somemap.notes }}
+                    {% endif %}
+                    </td>
+                    
+                    <td class="small"> {{ somemap.visibility }} </td>
+                    <td class="small"> {{ somemap.status }} </td>
+                    <td class="small">
+                        
+
+                        
+                    </td>
+                </tr> 
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock content %}

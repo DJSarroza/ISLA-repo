@@ -1,0 +1,39 @@
+2020-12-12 16:22:44.381810: Goal graph nodes: 7326
+2020-12-12 16:22:44.381810: Goal graph action inventory:
+	delegate_getquest:900
+	creaturegetsitemfromplace:360
+	creaturelosesitematplace:360
+	creaturegiveitemtocreature:1800
+	steal:1800
+	creaturekillcreature_withweapon:450
+	creaturekillcreature_noweapon:450
+	creatureinjurescreature_withweapon:450
+	creatureinjurescreature_noweapon:450
+	creaturebleedsout:6
+	creaturebleedsout2:30
+	move:270
+	--------------
+	7326
+2020-12-12 16:22:44.414721: [01...] Initializing planner . . .
+2020-12-12 16:22:44.414721 	 [raw][['intends', ['Ron', 'person'], [['has', ['Ron', 'person'], ['Mystical_Book', 'mcguffin']], 'predicate']], ['alive', ['Ron', 'person']]]
+2020-12-12 16:22:44.415718 	 [+]['intends', ['Ron', 'person'], [['has', ['Ron', 'person'], ['Mystical_Book', 'mcguffin']], 'predicate']]
+2020-12-12 16:22:44.415718 	 [+]['alive', ['Ron', 'person']]
+2020-12-12 16:22:44.651536 layer: 0; nodes: 1
+2020-12-12 16:22:48.652870 [Try #1]Plan graph generation execution time:
+2020-12-12 16:22:48.654869 	4.225184 second/s
+2020-12-12 16:22:48.654869 	0.07041973333333333 minute/s
+2020-12-12 16:22:48.654869: Completed plan cycle: [01]
+2020-12-12 16:22:48.655862: Total nodes    : 3
+2020-12-12 16:22:48.655862: Goal nodes     : 2
+2020-12-12 16:22:48.655862: Author's Goals  : [['intends', ['Ron', 'person'], [['has', ['Ron', 'person'], ['Mystical_Book', 'mcguffin']], 'predicate']], ['alive', ['Ron', 'person']]]
+2020-12-12 16:22:48.655862: Achieved intentions : 
+	['alive', ['Ron', 'person']]
+	['intends', ['Ron', 'person'], [['has', ['Ron', 'person'], ['Mystical_Book', 'mcguffin']], 'predicate']]
+2020-12-12 16:22:48.664837: Achieved author's goals : 
+	['alive', ['Ron', 'person']]:3
+	['intends', ['Ron', 'person'], [['has', ['Ron', 'person'], ['Mystical_Book', 'mcguffin']], 'predicate']]:2
+2020-12-12 16:22:48.665835: Action breakdown:
+	None:1
+	delegate_getquest:2
+2020-12-12 16:22:48.701749: Solution for: None
+2020-12-12 16:22:48.767563: Solution for: None

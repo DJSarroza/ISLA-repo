@@ -1,0 +1,605 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+<script>
+document.getElementById("main-nav-link-storygenerator").className += " active";
+</script>
+
+<script>
+    
+    var domain_array = []
+    
+    function draw_chapter_plan_graph(raw_result){
+        
+        raw_rows = raw_result.split("/|")
+        node_array = []
+        
+        root_node = {
+            text: { name: "Chapter Initial State" },
+            //HTMLclass: "the-parent",
+            stackChildren: true,
+            parentLabelString: ""
+        }
+        
+        node_array.push(root_node)
+        
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length > 1){
+                objecttype_id           = split_row[0]
+                objecttype_domain_full_label    = split_row[1]
+                objecttype_object_type  = split_row[2]
+                objecttype_parent_type  = split_row[3]
+                objecttype_default_flag = split_row[4]
+                objecttype_status       = split_row[5]
+                
+                new_node = {
+                    text: { 
+                        name: objecttype_object_type 
+                    },
+                    HTMLclass: "small",
+                    parentLabelString:  objecttype_parent_type,
+                    //image: "{{ url_for('static',filename='assets/mosses.png') }}",
+                    stackChildren: true
+                    
+                }
+                
+                node_array.push(new_node)
+            }
+        }
+        
+        
+        for(index=1;index<node_array.length;index++){
+            //alert(node_array[index].parentLabelString + " " + node_array[index].parentLabelString)
+            if(node_array[index].parentLabelString != ""){
+                for(j=1;j<node_array.length;j++){
+                    if(node_array[index].parentLabelString == node_array[j].text.name){
+                        node_array[index]["parent"] = node_array[j]
+                    }
+                }
+                //
+            }else{
+                node_array[index]["parent"] = root_node
+            }
+            
+        }
+        
+        config = {
+            container: "#chapter_plan_graph_display",
+            rootOrientation: "WEST",
+            levelSeparation:    25,
+            siblingSeparation:  70,
+            subTeeSeparation:   70,
+            nodeAlign: "BOTTOM",
+            scrollbar: "fancy",
+            padding: 35,
+            node: { HTMLclass: "evolution-tree" },
+            connectors: {
+                type: "step",
+                style: {
+                    "stroke-width": 2,
+                    "stroke-linecap": "round",
+                    "stroke": "#111"
+                }
+            }
+        };
+        
+        tree_structure = [config];
+        
+        for(i=0;i<node_array.length;i++){
+            tree_structure.push(node_array[i])
+        }
+        
+        new Treant( tree_structure );
+        
+    }
+    
+    function draw_chapter_chain_tree(raw_result){
+        
+        raw_rows = raw_result.split("/|")
+        node_array = []
+        
+       //root_node = {
+       //    //text: { name: "Initial State" },
+       //    HTMLclass: "the-parent",
+       //    stackChildren: true,
+       //    parentLabelString: "",
+       //    pseudo: true
+       //}
+        
+        //node_array.push(root_node)
+        
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 9){
+                chapter_id      = split_row[0]
+                chapter_number  = split_row[1]
+                chapter_address = split_row[2]
+                chapter_label   = split_row[3]
+                initial_state   = split_row[4]
+                final_state     = split_row[5]
+                parent_chapter  = split_row[6]
+                actions_raw     = split_row[7]
+                
+                split_address = chapter_address.split("-")
+                
+                action_string = ""
+                split_actions = actions_raw.split(":")
+                for(j=0;j<split_actions.length;j++){
+                    action_string = action_string + split_actions[j] + "<br>"
+                }
+                
+                if(chapter_label == "NONE"){
+                    name_str = "Initial State"
+                    new_node = {
+                        text: { name: "Initial State" },
+                        //image: "{{ url_for('static',filename='assets/910100.svg') }}",
+                        HTMLclass: "the-parent",
+                        stackChildren: true,
+                        chapterId: chapter_id,
+                        parentLabelString: ""
+                    }
+                }else{
+                
+                    //some_val = Math.floor(Math.random() * 6);
+                    //switch(some_val){
+                    //
+                    //case 0:
+                    //    image_file = "{{ url_for('static',filename='assets/910148.svg') }}"
+                    //    break;
+                    //case 1:
+                    //    image_file = "{{ url_for('static',filename='assets/910090.svg') }}"
+                    //    break;
+                    //case 2:
+                    //    image_file = "{{ url_for('static',filename='assets/910084.svg') }}"
+                    //    break;
+                    //case 3:
+                    //    image_file = "{{ url_for('static',filename='assets/910103.svg') }}"
+                    //    break;
+                    //case 4:
+                    //    image_file = "{{ url_for('static',filename='assets/910056.svg') }}"
+                    //    break;
+                    //case 5:
+                    //    image_file = "{{ url_for('static',filename='assets/910067.svg') }}"
+                    //    break;
+                    //    
+                    //}
+                    
+                    //someHTML = "<img class='w-25 h-25' src=image_file>"
+                    
+                    name_str = chapter_label + ": " + split_address[split_address.length - 1]
+                    new_node = {
+                        text: { 
+                            name: name_str
+                        },
+                        //innerHTML: someHTML,
+                        HTMLclass: "small",
+                        chapterId: chapter_id,
+                        parentLabelString:  parent_chapter,
+                        //image: "{{ url_for('static',filename='assets/mosses.png') }}",
+                        //stackChildren: true
+                        
+                    }
+                }
+                node_array.push(new_node)
+            }
+        }
+        
+        
+        for(index=0;index<node_array.length;index++){
+            //alert(node_array[index].parentLabelString + " " + node_array[index].parentLabelString)
+            if(node_array[index].parentLabelString != ""){
+                for(j=0;j<node_array.length;j++){
+                    if(node_array[index].parentLabelString == node_array[j].chapterId){
+                        node_array[index]["parent"] = node_array[j]
+                    }
+                }
+                //
+            }else{
+                //node_array[index]["parent"] = root_node
+            }
+            
+        }
+        
+        config = {
+            container: "#chapter_chain_tree_display",
+            //rootOrientation: "WEST",
+            levelSeparation:    25,
+            siblingSeparation:  70,
+            subTeeSeparation:   70,
+            nodeAlign: "BOTTOM",
+            scrollbar: "fancy",
+            padding: 35,
+            node: { HTMLclass: "evolution-tree" },
+            connectors: {
+                type: "curve",
+                style: {
+                    "stroke-width": 2,
+                    "stroke-linecap": "round",
+                    "stroke": "#111"
+                }
+            }
+        }
+        
+        tree_structure = [config];
+        
+        for(i=0;i<node_array.length;i++){
+            tree_structure.push(node_array[i])
+        }
+        
+        new Treant( tree_structure )
+        
+    }
+    
+    function get_plan_chapter_instances(){
+        if(!enablePeriodicProgressQuery){
+            return;
+        }
+        
+        run_id = document.getElementById("run_id").value
+        $.getJSON($SCRIPT_ROOT + '/_get_plan_chapter_instances', {
+            run_id   : run_id
+        }, function(data) {
+            
+            draw_chapter_chain_tree(data.result)
+            
+            setTimeout(get_plan_chapter_instances, 4000);
+            
+        });
+    
+    
+    }
+    
+    function domain_selected(domain_full_label){
+    
+        for(var i=0;i<domain_array.length;i++){
+            
+            if(domain_array[i] == domain_full_label){
+                document.getElementById("domain_container_"+domain_array[i]).classList.add("border-success");
+                document.getElementById("domain_container_"+domain_array[i]).classList.add("border-3");
+                document.getElementById("domain_container_"+domain_array[i]).classList.remove("border-secondary");
+            }else{
+                document.getElementById("domain_container_"+domain_array[i]).classList.add("border-secondary");
+                document.getElementById("domain_container_"+domain_array[i]).classList.remove("border-success");
+                document.getElementById("domain_container_"+domain_array[i]).classList.remove("border-3");
+            }
+        }
+        
+        document.getElementById('domain_'+domain_full_label+'_isselected').click()
+        document.getElementById('domain_full_label').value = domain_full_label
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_chapter_patterns', {
+            domain_full_label   :  domain_full_label
+        }, function(data) {
+        
+            chapter_patterns_str = data.result
+            
+            update_chapter_patterns(chapter_patterns_str)
+        });
+    }
+    
+    function update_chapter_patterns(chapter_patterns_str){
+    
+        raw_rows = chapter_patterns_str.split("/|")
+        
+        output_HTML = ""
+        output_HTML = output_HTML + "<select class='form-control form-control-lg' id='story_pattern'>\n"
+        
+        for(i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            
+            if(split_row.length == 5){
+                chapter_pattern_cat_label   = split_row[0]
+                main_label                  = split_row[1]
+                sub_label                   = split_row[2]
+                name_label_str              = split_row[3]
+                
+                
+                if(sub_label != ""){
+                    output_HTML = output_HTML + "   <option value='"+name_label_str+"'>"+main_label+" - "+sub_label+"</option>"
+                }else{
+                    output_HTML = output_HTML + "   <option value='"+name_label_str+"'>"+main_label+"</option>"
+                }
+            }
+        }
+        output_HTML = output_HTML + "</select'>\n"
+        document.getElementById("story_pattern_container").innerHTML = output_HTML
+        
+        document.getElementById("random_story_pattern").checked = false
+    }
+    
+    
+    
+</script>
+
+    
+
+        <!-- Admin Selection -->
+        <div class="content-section">
+            <div class="row pt-1">
+                <div class="col-md-2">
+                    Run ID
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" type="text" disabled id="run_id">
+                </div>
+            </div>
+            <div class="row pt-1">
+                <div class="col-md-2">
+                    User ID
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" type="text" disabled id="user_id">
+                </div>
+            </div>
+            <div class="row pt-1">
+                <div class="col-md-2">
+                    Domain Info
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" type="text" disabled id="domain_full_label">
+                    
+                </div>
+            </div>  
+        </div>
+        
+        <!-- Domain Selection -->
+        <div id="domain_flash_area">
+        </div>
+        <div class="content-section">
+            <div class="bg-secondary text-light rounded p-3">
+                <h4 class="display-5">1. Choose a Domain</h4>
+            </div>
+            
+            <div class="row pt-1">
+                
+                {% for somedomain in loadable_domains %}
+                <div class="col-md-4 pl-4 pr-4 pt-4">
+                    <div class="border border-secondary rounded pl-4 pr-4 pt-4" id="domain_container_{{ somedomain.domain_full_label }}">
+                        <a class="btn" onclick="domain_selected('{{ somedomain.domain_full_label }}')">
+                            <img class="img-fluid" src="{{ url_for('static', filename='assets/910067.svg') }}" width="100%" />
+                        </a>
+                        
+                        <div class="dropdown-divider"></div>
+                        
+                        <h3 class="display-5">{{ somedomain.category }}</h3>
+                        <h5 class="text-muted">{{ somedomain.sub_label }}</h5>
+                        
+                        <p class="text-info small">{{ somedomain.author_notes }}</p>
+                        
+                        <div class="dropdown-divider"></div>
+                        <div class="text-info font-italic small">Last updated: {{ somedomain.last_edited }}</div>
+                        <br>
+                        <input class="collapse" type="radio" id="domain_{{ somedomain.domain_full_label }}_isselected" name="domain_isselected" disabled>
+                    </div>
+                </div>
+                <script>
+                    domain_array.push("{{ somedomain.domain_full_label }}")
+                </script>
+                {% endfor %}
+            
+            </div>
+        </div>
+        
+    
+        <!-- Story Pattern Selection -->
+        <div id="story_pattern_flash_area">
+        </div>
+        <div class="content-section">
+            <div class="bg-secondary text-light rounded p-3">
+                <h4 class="display-5">2. Choose a Story Pattern</h4>
+            </div>
+            
+            <div class="row pt-1">
+                <div class="col-md-6">
+                    <div id="story_pattern_container">
+                        <select class="form-control form-control-lg" id="story_pattern">
+                            <option value="">--Choose a Domain first--</option>
+                        </select>
+                    </div>
+                    
+                    <br>
+                    <input class="" type="checkbox" id="random_story_pattern">
+                    Random story pattern
+                    </input>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Location Map Selection -->
+        <div id="location_map_flash_area">
+        </div>
+        <div class="content-section">
+            <div class="bg-secondary text-light rounded p-3">
+                <h4 class="display-5">3. Choose a Location Map</h4>
+            </div>
+            
+            <div class="row pt-1">
+                <div class="col-md-6">
+                    <div id="story_pattern_container">
+                        <select class="form-control form-control-lg" id="location_map">
+                        <option value="">--Select one--</option>
+                        {% for somemap in loadable_maps %}
+                        <option value="{{ somemap.map_label }}">{{ somemap.readable_label }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <span>
+            <a class="btn btn-outline-info" id="generate" onclick="generate_onclick()">Generate</a>
+            </span>
+            
+
+        </div>
+    
+    </div>
+    
+    <div id="loading_area_flash_area">
+    </div>
+    
+    <div class="content-section">
+    
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <span id="img_loader1_span" class="align-middle" style="visibility: hidden;">
+                Generating Story 
+                <img class="loader-img" id="img_loader1" src="{{ url_for('static', filename='assets/loader2.gif') }}">
+                </span>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content-section" id="chapter_chain_tree_display">
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    
+    
+
+
+<!-- JavaScript area -->
+
+<!--   Live progress Paper canvas drawing scripts -->
+
+<script type="text/javascript">
+    
+    
+    var enablePeriodicProgressQuery = false;
+    var generate_clicked = false
+    function generate_onclick(){
+        
+        // Data checks here:
+        has_error = false
+        if(document.getElementById("domain_full_label").value == ""){
+            flash_text = "Please select a domain"
+            add_flash_message(flash_text,"danger","default","domain_flash_area","target")
+            has_error = true
+        }
+        
+        if(document.getElementById("location_map").value == ""){
+            flash_text = "Invalid location map"
+            add_flash_message(flash_text,"danger","default","location_map_flash_area","target")
+            has_error = true
+        }
+        
+        if(has_error){
+            flash_text = "Invalid input; review input fields"
+            add_flash_message(flash_text,"danger","default","header_flash_message_area","top")
+            return 0
+        }
+        
+        if(generate_clicked == false){
+            
+            enablePeriodicProgressQuery = true;
+            setTimeout(get_plan_chapter_instances, 1000)
+            
+            document.getElementById("img_loader1_span").style.visibility = "visible";
+            generate_clicked = true;
+            
+            document.getElementById("img_loader1_span").scrollIntoView()
+            
+            run_id = document.getElementById("run_id").value
+            
+            $.getJSON($SCRIPT_ROOT + '/_run_chapter_chainer', {
+                run_id                  : document.getElementById("run_id").value                   ,
+                user_id                 : document.getElementById("user_id").value                  ,
+                domain_full_label       : document.getElementById("domain_full_label").value        ,
+                //series                  : document.getElementById("series").value                   ,
+                story_pattern           : document.getElementById("story_pattern").value            ,
+                random_story_pattern    : document.getElementById("random_story_pattern").checked   , 
+                //run_count               : document.getElementById("run_count").value                ,
+                //neutral_obj_count       : document.getElementById("neutral_obj_count").value        ,
+                //runtime_threshold       : document.getElementById("runtime_threshold").value        ,
+                location_map            : document.getElementById("location_map").value             
+            }, function(data) {
+                enablePeriodicProgressQuery = false;
+                document.getElementById("img_loader1_span").style.visibility = "hidden";
+                generate_clicked = false;
+                raw_output = data.result;
+                
+                //convertRawOutput();
+                
+                flash_text = "Story Generation Completed. View it [<a href='/narrative_instance/"+run_id+"'>here]"
+                add_flash_message(flash_text,"success","default","header_flash_message_area","target")
+                
+                document.getElementById('run_id').value = generateRunId()
+            });
+            
+            
+        }else{
+            alert("A story is still being generated...")
+        }
+        return false;
+    }
+    
+</script>
+
+
+<!--   Default run_id value generation -->
+<script type="text/javascript" src="{{ url_for('static',filename='js/utility.js') }}"></script>
+<script type="text/javascript">
+    /*
+        Emulate this:
+        now = datetime.datetime.now()
+        now_str = now.strftime("%Y%m%d_%H%M%S")
+        return secrets.token_hex(8) + "_" + now_str
+    */
+    
+    function addZero(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
+    
+    function generateRunId(){
+    
+        var today = new Date();
+        
+        var yyyy    = today.getFullYear();
+        var mm      = addZero(today.getMonth()+1); 
+        var dd      = addZero(today.getDate());
+        var HH      = addZero(today.getHours());
+        var MM      = addZero(today.getMinutes());
+        var SS      = addZero(today.getSeconds());
+        
+        return yyyy+mm+dd+"_"+HH+MM+SS + "_" + randHex(8)
+    }
+    
+    document.getElementById('run_id').disabled = true
+    document.getElementById('run_id').value = generateRunId()
+    
+    document.getElementById('user_id').disabled = true
+    {% if current_user.is_authenticated %}
+    document.getElementById('user_id').value = "{{ current_user.username }}"
+    {% else %}
+    document.getElementById('user_id').value = "anonymous"
+    {% endif %}
+    
+    
+</script>
+
+
+<script type=text/javascript>
+$('#random_story_pattern').bind('click', function() {
+    
+    document.getElementById("story_pattern").disabled = document.getElementById("random_story_pattern").checked
+    //alert(document.getElementById("random_story_pattern").checked)
+});
+
+$('#random_story_pattern').click()
+
+</script>
+{% endblock content %}

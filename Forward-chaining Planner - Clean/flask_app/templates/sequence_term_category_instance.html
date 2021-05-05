@@ -1,0 +1,2563 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+
+<script>
+document.getElementById("main-nav-link-stc").className += " active";
+document.getElementById("main-nav-link-ncs").className += " active";
+</script>
+
+
+<!----------- [ BREADCRUMBS AREA ] -->
+<div class="content-section">
+    <div id="top-breadcrumbs">
+    </div>
+</div>
+
+<script>
+var tree_structure = {
+    chart: {
+        container: "#top-breadcrumbs",
+        levelSeparation:    160,
+        siblingSeparation:  70,
+        subTeeSeparation:   170,
+        nodeAlign: "BOTTOM",
+        rootOrientation: "WEST",
+        scrollbar: "fancy",
+        padding: 15,
+        node: { HTMLclass: "evolution-tree" },
+        connectors: {
+            type: "curve",
+            style: {
+                "stroke-width": 2,
+                "stroke-linecap": "round",
+                "stroke": "#ccc"
+            }
+        }
+    },
+    
+    nodeStructure: {
+        text: { 
+            desc: "Domain"
+        },
+        //HTMLclass: "font-weight-bold",
+        image: "{{ url_for('static',filename='assets/circle.png') }}",
+        children: [
+            {
+                text: {
+                    desc: "Sequence Terms" 
+                },
+                //HTMLclass: "the-parent",
+                image: "{{ url_for('static',filename='assets/dot.png') }}",
+                children: [
+                    {
+                        text: { 
+                            desc: "Chapter Patterns" 
+                        },
+                        //HTMLclass: "the-parent",
+                        image: "{{ url_for('static',filename='assets/circle.png') }}",
+                        children: [
+                            {
+                                text: { 
+                                    desc: "Locations" 
+                                },
+                                //HTMLclass: "the-parent",
+                                image: "{{ url_for('static',filename='assets/circle.png') }}",
+                                children: [
+                                    {
+                                        text: { 
+                                            desc: "Object Names" 
+                                        },
+                                        //HTMLclass: "the-parent",
+                                        image: "{{ url_for('static',filename='assets/circle.png') }}",
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            
+            }
+        ]
+    }
+
+};
+
+new Treant( tree_structure );
+
+</script>
+
+
+<!----------- [ TOP MENU BAR ] -->
+<div class="content-section">
+    <div class="btn-group">
+        <a href="{{ url_for('sequence_term_category_instance') }}" class="btn btn-info btn-sm">New</a>
+        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#topmenu_loadmodal">Load</button>
+    </div>
+</div>
+
+<!-- Load Modal Space-->
+<div class="modal fade" id="topmenu_loadmodal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          
+          <h4 class="modal-title">Load Sequence Term Category</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body small">
+        
+            <p class="small text-info font-italic">Some text in the modal.</p>
+
+            <div class="row form-group">
+                <div class="col-md-3">
+                Sequence Term Category
+                </div>
+                <div class="col-md-3">
+                Created By
+                </div>
+                <div class="col-md-3">
+                Last Edited By
+                </div>
+            </div>
+
+
+        </div>
+      </div>
+      
+    </div>
+</div>
+
+<!----------- [ SEQUENCE TERM CATEGORY GENERAL INFORMATION ] -->
+<script>
+    category_level_object_types_array = new Array()
+    
+    function typeIsOfType(type1, type2, object_types_array){
+        //alert(type1 + " == " + type2)
+        //alert(object_types_array)
+        if(type1 == type2){
+            return(true)
+        }
+        
+        for(var ctr=0;ctr<object_types_array.length;ctr++){
+            if(object_types_array[ctr][0] == type1){
+                return(typeIsOfType(object_types_array[ctr][1],type2, object_types_array))
+            }
+        }
+        return(false)
+    }
+    
+    function update_object_types_array(object_types_array,raw_result){
+        //var object_types_array = new Array()
+        //==================================================
+        raw_rows = raw_result.split("/|")
+        for(var ctr=0; ctr<raw_rows.length; ctr++){
+            split_row = raw_rows[ctr].split("/;")
+            if(split_row.length == 7){
+                object_types_array.push([split_row[2],split_row[3]])
+            }
+        }
+    }
+
+    function update_domain_info_area(raw_result){
+        raw_rows = raw_result.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 14){
+                document.getElementById("sequence_term_cat_domain_id").value = split_row[0]
+                document.getElementById("sequence_term_cat_domain_full_label").value = split_row[6]
+            }
+        }
+    }
+    
+    function assess_category_duplicate(raw_result){
+    
+        document.getElementById("seqterm_cat_existing_notif").innerHTML = ""
+        
+        raw_rows = raw_result.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 10){
+                
+                existing_sequence_term_cat_label = split_row[1]
+                existing_sequence_term_cat_domain = split_row[3]
+                
+                if(existing_sequence_term_cat_label != ""){
+                    document.getElementById("seqterm_cat_existing_notif").innerHTML = "Already exists: " + existing_sequence_term_cat_domain + " - " + existing_sequence_term_cat_label
+                    
+                    document.getElementById("sequence_term_cat_label_existing").value = existing_sequence_term_cat_label
+                    sequence_term_cat_label_existing_onchange()
+                }
+            }
+        }
+    }
+    
+    function update_sequence_term_objects_area(raw_result){
+        
+        tbody = document.getElementById("objects_table_tbody")
+        tbody.innerHTML = ""
+        
+        raw_rows = raw_result.split("/|")
+        
+        //alert(raw_rows.length)
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 5){
+                
+                seqterm_cat_object_id          = split_row[0]
+                seqterm_cat_object_var_name    = split_row[1]
+                seqterm_cat_object_type        = split_row[2]
+                seqterm_cat_object_domain      = split_row[3]
+                
+                row = document.createElement("tr")
+                //row.id = ""
+                //row.classList.add()
+                
+                //  1. vacant
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                cell.classList.add("text-center")
+                outputHTML = ""
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                //  2. ID
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                outputHTML = seqterm_cat_object_id
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                //  3. Domain
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                outputHTML = seqterm_cat_object_domain
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                //  4. Variable Name
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                outputHTML = seqterm_cat_object_var_name
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                //  5. Object Type
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                outputHTML = seqterm_cat_object_type
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+
+                //  6. vacant
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+
+                //  7. vacant
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                tbody.appendChild(row)
+            }
+        }
+    }
+    
+    function update_sequence_term_actors_area(raw_result){
+        
+        tbody = document.getElementById("actors_table_tbody")
+        tbody.innerHTML = ""
+        //alert("Actors: " + raw_rows.length)
+        raw_rows = raw_result.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 5){
+                
+                seqterm_cat_object_id          = split_row[0]
+                seqterm_cat_object_var_name    = split_row[1]
+                seqterm_cat_object_type        = split_row[2]
+                seqterm_cat_object_domain      = split_row[3]
+                
+                row = document.createElement("tr")
+                //row.id = ""
+                //row.classList.add()
+                
+                //  1. vacant
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                cell.classList.add("text-center")
+                outputHTML = ""
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                //  2. ID
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                outputHTML = seqterm_cat_object_id
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                //  3. Domain
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                outputHTML = seqterm_cat_object_domain
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                //  4. Variable Name
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                outputHTML = seqterm_cat_object_var_name
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                //  5. Object Type
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                outputHTML = seqterm_cat_object_type
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+
+                //  6. vacant
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+
+                //  7. vacant
+                cell = document.createElement("td")
+                cell.classList.add("small")
+                outputHTML = ""
+                cell.innerHTML = outputHTML
+                row.appendChild(cell);
+                
+                tbody.appendChild(row)
+            }
+        }
+    }
+    
+    function sequence_term_cat_label_new_onchange(){
+        sequence_term_cat_label_new = document.getElementById("sequence_term_cat_label_new").value
+        sequence_term_cat_label_existing = document.getElementById("sequence_term_cat_label_existing").value
+        domain_full_label = document.getElementById("sequence_term_cat_domain").value
+        
+        if(((sequence_term_cat_label_new != "") || (sequence_term_cat_label_existing != "")) && (domain_full_label != "")){
+            
+            document.getElementById("sequence_term_add_term_button").disabled = false
+            // call get_sequence_term_category
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_sequence_term_category', {
+                
+                sequence_term_cat_label : sequence_term_cat_label_new
+                //domain_full_label       : domain_full_label
+                
+            }, function(data) {
+                assess_category_duplicate(data.result)
+            });
+            
+        }else{
+            document.getElementById("sequence_term_add_term_button").disabled = true
+        }
+        
+
+    }
+    
+    function update_seqterms_table_tbody(raw_result){
+        tbody = document.getElementById("seqterms_table_tbody")
+        tbody.innerHTML = ""
+        
+        raw_rows = raw_result.split("/|")
+        
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            //alert(split_row.length)
+            if(split_row.length > 1){
+                
+                
+                //ID                
+                //Main Label        
+                //Sub Label         
+                //Sequence          
+                //Intentions        
+                //Req. Precondition 
+                //Req. Effect       
+                
+                seqterm_id             = split_row[0]
+                seqterm_main_label     = split_row[2]
+                seqterm_sub_label      = split_row[4]
+                seqterm_term_sequence  = split_row[7]
+                seqterm_intention      = split_row[17]
+                seqterm_precondition   = split_row[22]
+                seqterm_effect         = split_row[23]
+                
+                
+                seqterm_term_sequence_grouping_label = split_row[8]
+                
+                try{
+                    intention_div = document.getElementById(seqterm_term_sequence_grouping_label)
+                    
+                    new_intention = document.createElement("div")
+                    new_intention.innerHTML = seqterm_intention
+                    intention_div.appendChild(new_intention)
+                
+                }catch(err){
+                    
+                    new_row = document.createElement("tr")
+                    
+                    // vacant
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = ""
+                    new_cell.innerHTML = outputHTML
+                    new_row.appendChild(new_cell)
+                    
+                    // ID
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = seqterm_id
+                    new_cell.innerHTML = outputHTML
+                    new_row.appendChild(new_cell)
+                    
+                    // Main Label
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = seqterm_main_label
+                    new_cell.innerHTML = outputHTML
+                    new_row.appendChild(new_cell)
+                    
+                    // Sub Label
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = seqterm_sub_label
+                    new_cell.innerHTML = outputHTML
+                    new_row.appendChild(new_cell)
+                    
+                    // Sequence
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = seqterm_term_sequence
+                    new_cell.innerHTML = outputHTML
+                    new_row.appendChild(new_cell)
+                    
+                    // Intentions
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = ""
+                    new_cell.innerHTML = outputHTML
+                    
+                    //---Intention DIV
+                    intention_div = document.createElement("div")
+                    //intention_div.classList.add("small")
+                    intention_div.id = seqterm_term_sequence_grouping_label
+                    
+                    new_intention = document.createElement("div")
+                    new_intention.innerHTML = seqterm_intention
+                    intention_div.appendChild(new_intention)
+                    
+                    new_cell.appendChild(intention_div)
+                    //-----------------
+                    
+                    new_row.appendChild(new_cell)
+                    
+                    // Precondition
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = seqterm_precondition
+                    new_cell.innerHTML = outputHTML
+                    new_row.appendChild(new_cell)
+                    
+                    // Effect
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = seqterm_effect
+                    new_cell.innerHTML = outputHTML
+                    new_row.appendChild(new_cell)
+                    
+                    // vacant
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = ""
+                    new_cell.innerHTML = outputHTML
+                    new_row.appendChild(new_cell)
+                    
+                    // vacant
+                    new_cell = document.createElement("td")
+                    new_cell.classList.add("small")
+                    outputHTML = ""
+                    new_cell.innerHTML = outputHTML
+                    new_row.appendChild(new_cell)
+                    
+                    tbody.appendChild(new_row)
+                }
+                
+            }
+        }
+    }
+    
+    function sequence_term_cat_label_existing_onchange(){
+        if(document.getElementById("sequence_term_cat_label_existing").value != ""){
+            document.getElementById("sequence_term_cat_label_new").disabled = true
+            //document.getElementById("sequence_term_cat_domain").disabled = true
+            //document.getElementById("sequence_term_description").disabled = true
+            document.getElementById("sequence_term_add_term_button").disabled = false
+            
+            sequence_term_cat_label = document.getElementById("sequence_term_cat_label_existing").value
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_sequence_terms_by_category', {
+                sequence_term_cat_label : sequence_term_cat_label
+            }, function(data) {
+                update_seqterms_table_tbody(data.result)
+            });
+            
+        }else{
+            document.getElementById("sequence_term_cat_label_new").disabled = false
+            //document.getElementById("sequence_term_cat_domain").disabled = false
+            //document.getElementById("sequence_term_description").disabled = false
+            document.getElementById("sequence_term_add_term_button").disabled = true
+        }
+    }
+    
+    function update_sequence_term_cat_label_existing(raw_result){
+    
+        current_select = document.getElementById("sequence_term_cat_label_existing")
+        current_select.innerHTML = ""
+        new_option = document.createElement("option")
+        new_option.value = ""
+        new_option.label = "-- Select one --"
+        current_select.appendChild(new_option)
+        
+        raw_rows = raw_result.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 9){
+                
+                // id
+                // sequence_term_cat_label
+                // description
+                // domain
+                // visibility
+                // status
+                // created_by
+                // last_edited_by
+                
+                sequence_term_cat_label = split_row[1]
+                
+                new_option = document.createElement("option")
+                new_option.value = sequence_term_cat_label
+                new_option.label = sequence_term_cat_label
+                
+                current_select.appendChild(new_option)
+            }
+        }
+        
+    }
+    
+    function update_add_seqterm_add_intention_actor(raw_result){
+        raw_rows = raw_result.split("/|")
+        
+        current_select = document.getElementById("add_seqterm_add_intention_actor")
+        current_select.innerHTML = ""
+        new_option = document.createElement("option")
+        new_option.value = ""
+        new_option.label = "--Select one--"
+        current_select.appendChild(new_option)        
+        
+        new_option = document.createElement("option")
+        new_option.value = "?author;admin"
+        new_option.label = "*author [admin]"
+        current_select.appendChild(new_option)        
+                
+                
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length > 1){
+                obj_name = split_row[1]
+                obj_type = split_row[2]
+                
+                new_option = document.createElement("option")
+                
+                /*
+                new_option.value = "('"+obj_name+"','"+obj_type+"')"
+                new_option.label = "('"+obj_name+"','"+obj_type+"')"
+                */
+                
+                new_option.value = obj_name + ";" + obj_type
+                new_option.label = obj_name.replace("?","") + " ["+obj_type+"]"
+                
+                current_select.appendChild(new_option)
+            }
+        }
+    }
+    
+    function update_add_seqterm_add_intention_predicate(raw_result){
+        
+        raw_rows = raw_result.split("/|")
+        
+        current_select = document.getElementById("add_seqterm_add_intention_predicate")
+        current_select.innerHTML = ""
+        new_option = document.createElement("option")
+        new_option.value = ""
+        new_option.label = "--Select one--"
+        
+        current_select.appendChild(new_option)        
+                
+                
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            if(split_row.length > 1){
+                //alert("update_add_seqterm_add_intention_predicate")
+                predicate_label         = split_row[0]
+                definition_str          = split_row[1]
+                humanreadable_string1   = split_row[2]
+                
+                new_option = document.createElement("option")
+                new_option.value = definition_str
+                new_option.label = predicate_label
+                current_select.appendChild(new_option)
+            }
+            
+        }
+    }
+    
+    function update_add_seqterm_add_required_goal_predicate(raw_result){
+        
+        raw_rows = raw_result.split("/|")
+        
+        current_select = document.getElementById("add_seqterm_add_required_goal_predicate")
+        current_select.innerHTML = ""
+        new_option = document.createElement("option")
+        new_option.value = ""
+        new_option.label = "--Select one--"
+        
+        current_select.appendChild(new_option)        
+                
+                
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            if(split_row.length > 1){
+                //alert("update_add_seqterm_add_required_goal_predicate")
+                predicate_label         = split_row[0]
+                definition_str          = split_row[1]
+                humanreadable_string1   = split_row[2]
+                
+                new_option = document.createElement("option")
+                new_option.value = definition_str
+                new_option.label = predicate_label
+                current_select.appendChild(new_option)
+            }
+            
+        }
+    }
+    
+    function sequence_term_cat_domain_onchange(){
+
+        document.getElementById("sequence_term_cat_label_new").disabled = false
+        document.getElementById("sequence_term_add_term_button").disabled = true
+        
+        domain_full_label = document.getElementById("sequence_term_cat_domain").value    
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_objecttypes2', {
+            domain_full_label   :  domain_full_label
+        }, function(data) {
+            //update_new_actor_type(data.result)'
+            
+            update_object_types_array(category_level_object_types_array, data.result)
+        });
+
+        $.getJSON($SCRIPT_ROOT + '/_get_domain_info_from_label', {
+            domain_full_label   :  domain_full_label
+        }, function(data) {
+            update_domain_info_area(data.result)
+        
+            //call _get_sequence_term_categories_by_domainlabel
+            domain_full_label = document.getElementById("sequence_term_cat_domain").value
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_sequence_term_categories_by_domainlabel', {
+                domain_full_label       : domain_full_label
+            }, function(data) {
+                update_sequence_term_cat_label_existing(data.result)
+            });
+            
+            if(domain_full_label != ""){
+                
+                
+                $.getJSON($SCRIPT_ROOT + '/_get_sequence_term_objects', {
+                    domain_full_label       : domain_full_label
+                }, function(data) {
+                    update_sequence_term_objects_area(data.result)
+                });
+                
+                $.getJSON($SCRIPT_ROOT + '/_get_sequence_term_actors', {
+                    domain_full_label       : domain_full_label
+                }, function(data) {
+                    update_sequence_term_actors_area(data.result)
+                    update_add_seqterm_add_intention_actor(data.result)
+                });
+                
+                //alert(document.getElementById("sequence_term_cat_domain_id").value)
+                $.getJSON($SCRIPT_ROOT + '/_get_state_predicates_defnstr', {
+                    domain_id   :  document.getElementById("sequence_term_cat_domain_id").value
+                }, function(data) {
+                    update_add_seqterm_add_intention_predicate(data.result)
+                    update_add_seqterm_add_required_goal_predicate(data.result)
+                });
+            }
+        });
+
+    }
+    
+    function sequence_term_add_term_button_onclick(){
+        
+        // Reset values
+        
+        document.getElementById("add_seqterm_mainlabel").value = ""
+        document.getElementById("add_seqterm_sublabel").value = ""
+        document.getElementById("add_seqterm_add_intention_actor").value = ""
+        document.getElementById("add_seqterm_add_intention_predicate").value = ""
+        document.getElementById("add_seqterm_add_intention_parameter_area").innerHTML = ""
+        document.getElementById("add_seqterm_current_intentions_table_tbody").innerHTML = ""
+        
+        document.getElementById("add_seqterm_add_intention_button").disabled = false
+        
+        // Update values
+        
+        sequence_term_cat_label_new      = document.getElementById("sequence_term_cat_label_new").value
+        sequence_term_cat_label_existing = document.getElementById("sequence_term_cat_label_existing").value
+        
+        if((sequence_term_cat_label_new != "") && (sequence_term_cat_label_existing != "")){
+            alert("WARNING: Category label NEW and EXISTING both have values; EXISTING category label takes precedence.")
+            add_seqterm_sequence_term_cat_label = sequence_term_cat_label_existing
+            sequence_term_cat_label = sequence_term_cat_label_existing
+        }else{
+            if(sequence_term_cat_label_new != ""){
+                add_seqterm_sequence_term_cat_label = sequence_term_cat_label_new
+                sequence_term_cat_label = sequence_term_cat_label_new
+            }
+        
+            if(sequence_term_cat_label_existing != ""){
+                add_seqterm_sequence_term_cat_label = sequence_term_cat_label_existing
+                sequence_term_cat_label = sequence_term_cat_label_existing
+            }
+        }
+        
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_last_term_sequence', {
+            sequence_term_cat_label   :  sequence_term_cat_label
+        }, function(data) {
+            last_term_sequence = data.result
+            document.getElementById("add_seqterm_term_sequence").value = parseInt(last_term_sequence) + 1
+        });
+        
+        document.getElementById("add_seqterm_sequence_term_cat_label").value = add_seqterm_sequence_term_cat_label
+    }
+    
+    function clear_category_label(){
+        document.getElementById('sequence_term_cat_label_existing').value = ''
+        document.getElementById('sequence_term_cat_label_new').value = ''
+    }
+    
+</script>
+
+<div class="content-section">
+    <div class="row form-group">
+        <div class="col-md-8">
+            <h3 class="display-5">General Information</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!--Extra area-->
+        </div>
+    </div>
+
+    
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Domain
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="sequence_term_cat_domain" onchange="sequence_term_cat_domain_onchange()">
+              <option value="" selected>--Select one--</option>
+              {% for somedomain in domains %}
+              <option value="{{ somedomain.domain_full_label }}">{{ somedomain.readable_label }}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" value="" id="sequence_term_cat_domain_id">
+            <input type="hidden" value="" id="sequence_term_cat_domain_full_label">
+        </div>
+    </div>
+    
+    <!--//=================================================================================-->
+    <div class="dropdown-divider"></div>
+    <div class="row pt-1">
+        <div class="col-md-12 small text-info font-italic">
+        Create a new category
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Category Label
+        </div>
+        <div class="col-md-6">
+            <input class='form-control' id="sequence_term_cat_label_new" type="text" size="12" onchange="sequence_term_cat_label_new_onchange()">
+        </div>
+    </div>
+    <div class="row pt-1">
+        <div class="col-md-3">
+            
+        </div>
+        <div class="col-md-6">
+            <span id="seqterm_cat_existing_notif" class="small text-info font-italic"></span>
+        </div>
+    </div>
+    
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Description
+        </div>
+        <div class="col-md-6">
+            <textarea class='form-control' id="sequence_term_description" rows="3" cols="30" disabled></textarea>
+        </div>
+    </div>
+    
+
+    
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Visibility
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="sequence_term_cat_visibility">
+              <option value="PRIVATE-WRITE">Private</option>
+              <option value="PUBLIC-READONLY">Public - Read Only</option>
+              <option value="PUBLIC-WRITE">Public - Full Privileges</option>
+            </select>
+        </div>
+    </div>
+    
+    <!--//=================================================================================-->
+    <div class="dropdown-divider"></div>
+    
+    <div class="row pt-1">
+        <div class="col-md-12 small text-info font-italic">
+        ... or Modify an existing category
+        </div>
+    </div>
+
+    
+    <div class="row pt-1">
+        <div class="col-md-3">
+            Category Label
+        </div>
+        <div class="col-md-6">
+            <select class="form-control" id="sequence_term_cat_label_existing" onchange="sequence_term_cat_label_existing_onchange()">
+              <option value="" selected>--Select a Domain first--</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <!--
+            <button class="btn btn-light btn-sm border" type="button" onclick="clear_category_label();">Clear</button>
+            -->
+        </div>
+    </div>
+    
+    <!--//=================================================================================-->
+    <div class="dropdown-divider"></div>
+    
+    <div class="row pt-1">
+    
+        <div class="col-md-3">
+            
+        </div>
+        <div class="col-md-6">
+            <button type="button" 
+                    class="btn btn-info btn-sm" 
+                    data-toggle="modal" 
+                    data-target="#add_seqterm_submodal"
+                    onclick="sequence_term_add_term_button_onclick()"
+                    id="sequence_term_add_term_button"
+                    disabled
+            >
+                Add Sequence Term
+            </button>
+        </div>
+    </div>
+</div>
+
+<!----------- [ SEQUENCE TERMS ] -->
+<script>
+
+    function add_seqterm_button_onclick(){
+    
+    }
+
+</script>
+<div class="content-section">
+    <div class="row form-group">
+        <div class="col-md-8">
+            <h3 class="display-5">Sequence Terms</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            * Add collapsible table here
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!--Extra area-->
+        </div>
+    </div>
+    
+    <div class="row pt-1">
+        <div class="col-md-12">
+        
+            <div id="seqterms_area">
+                <table class="table table-hover" id="seqterms_table">
+                    <thead class="thead-dark small" id="seqterms_table_thead">
+                        <tr>
+                            <th class="align-top">                      </th>
+                            <th class="align-top"> ID                   </th>
+                            <th class="align-top"> Main Label           </th>
+                            <th class="align-top"> Sub Label            </th>
+                            <th class="align-top"> Sequence             </th>
+                            <th class="align-top"> Intentions           </th>
+                            <th class="align-top"> Req. Precondition    </th>
+                            <th class="align-top"> Req. Effect          </th>
+                            <th class="align-top">                      </th>
+                            <th class="align-top">                      </th>
+                        </tr>
+                        <!--
+                        <tr>
+                            <td>
+                            </td>
+                            
+                            <td>
+                            </td>
+                            
+                            <td>
+                            </td>
+                            
+                            <td>
+                            </td>
+                            
+                            <td>
+                            </td>
+                            
+                            <td>
+                            </td>
+                            
+                            <td>
+                            </td>
+                            
+                            <td>
+                            </td>
+                            
+                            <td class="text-right">
+                            
+
+                                
+                            </td>
+                            
+                            <td>
+                            </td>
+                        </tr>
+                        -->
+                    </thead>
+                    
+                    <tbody id="seqterms_table_tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!----------- [ SEQUENCE TERM CATEGORY OBJECTS ] -->
+<script>
+    function clear_new_object_fields(){
+    
+    }
+    
+    function new_object_type_onchange(){
+    
+    }
+    
+    function update_new_object_type(raw_result){
+    
+        current_select = document.getElementById("new_object_type")
+        current_select.innerHTML = ""
+        new_option = document.createElement("option")
+        new_option.value = ""
+        new_option.label = "-- Select one --"
+        current_select.appendChild(new_option)
+
+        raw_rows = raw_result.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 7){
+                
+                objtype_id           = split_row[0]
+                objtype_domain_id    = split_row[1]
+                objtype_object_type  = split_row[2]
+                objtype_parent_type  = split_row[3]
+                objtype_default_flag = split_row[4]
+                objtype_status       = split_row[5]
+                
+                //--
+                new_option = document.createElement("option")
+                new_option.value = objtype_object_type
+                //new_option.label = "('"+objtype_object_type+"', '"+objtype_parent_type+"')"
+                new_option.label = objtype_object_type
+                current_select.appendChild(new_option)
+                //--
+            }
+        }
+    }
+    
+    function new_object_domain_onchange(){
+        
+        domain_full_label = document.getElementById("new_object_domain").value
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_objecttypes2', {
+            domain_full_label   :  domain_full_label
+        }, function(data) {
+            update_new_object_type(data.result)
+        });
+    }
+    
+    function add_objects_table_row(object_id,object_domain_full_label, object_variable_name, object_type){
+    
+        tbody = document.getElementById("objects_table_tbody")
+        //tbody.innerHTML = ""
+    
+        row = document.createElement("tr")
+        //row.id = ""
+        //row.classList.add()
+        
+        //  1. vacant
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        cell.classList.add("text-center")
+        outputHTML = ""
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        //  2. ID
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        cell.classList.add("font-italic")
+        outputHTML = ""
+        outputHTML = object_id
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        //  3. Domain
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        outputHTML = object_domain_full_label
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        //  4. Variable Name
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        outputHTML = "?" + object_variable_name
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        //  5. Object Type
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        outputHTML = object_type
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+
+        //  6. vacant
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+
+        //  7. vacant
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        
+        tbody.appendChild(row)
+    }
+    
+    function add_object_button_onclick(){
+        
+        domain_full_label = document.getElementById("new_object_domain").value
+        variable_name     = document.getElementById("new_object_var_name").value.replace("?","")
+        object_type       = document.getElementById("new_object_type").value
+        
+        if((domain_full_label != "") && (variable_name != "") && (object_type != "")){
+        
+            $.getJSON($SCRIPT_ROOT + '/_add_sequence_term_object', {
+                domain_full_label   : domain_full_label     ,
+                variable_name       : variable_name         ,
+                object_type         : object_type
+            }, function(data) {
+                
+                
+                add_objects_table_row("new",domain_full_label,variable_name,object_type)
+            });
+        }
+    }
+    
+</script>
+<div class="content-section">
+    <div class="row form-group">
+        <div class="col-md-8">
+            <h3 class="display-5">Objects</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            * Add collapsible table here
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!--Extra area-->
+        </div>
+    </div>
+    
+    <div class="row pt-1">
+        <div class="col-md-12">
+            <div id="seqterm_cat_objects_area">
+            
+                <table class='table table-hover' id='objects_table'>
+                    <thead class='thead-dark small' id='objects_table_thead'>
+                        <tr>
+                            <th class='align-top'>                  </th>
+                            <th class='align-top'> ID               </th>
+                            <th class='align-top'> Domain           </th>
+                            <th class='align-top'> Variable Name    </th>
+                            <th class='align-top'> Object Type      </th>
+                            <th class='align-top'></th>
+                            <th class='align-top'></th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="text-info">Add new object</span>
+                            </td>
+                            
+                            <td>
+                                
+                            </td>
+                            
+                            <td>
+                                <select class="form-control form-control-sm" id="new_object_domain" onchange="new_object_domain_onchange()">
+                                    <option value="">--Select one--</option>
+                                    {% for somedomain in domains %}
+                                    <option value="{{ somedomain.domain_full_label }}">{{ somedomain.readable_label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            
+                            <td>
+                                <input class="form-control form-control-sm" id="new_object_var_name">
+                            </td>
+                            
+                            <td>
+                                <select class="form-control form-control-sm" id="new_object_type" onchange="new_object_type_onchange()">
+                                    <option value="">--Select a Domain first--</option>
+                                </select>
+                            </td>
+                            
+                            <td class="text-right">
+                                <button class="btn btn-info btn-sm" type="button" onclick="add_object_button_onclick()">Add</button>
+                                <button class="btn btn-info btn-sm" type="button" onclick="clear_new_object_fields()">Clear</button>
+                            </td>
+                            
+                            <td>
+                            </td>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="objects_table_tbody">
+                    </tbody>
+                </table>
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!----------- [ SEQUENCE TERM CATEGORY ACTORS ] -->
+<script>
+    
+    var new_actor_level_object_types_array = new Array()
+    
+    function clear_new_actor_fields(){
+    
+    }
+    
+    function new_actor_type_onchange(){
+    
+    }
+
+    function update_new_actor_type(raw_result){
+        
+        new_actor_level_object_types_array = new Array()
+        
+        //==================================================
+        
+        update_object_types_array(new_actor_level_object_types_array, raw_result)
+        /*
+        raw_rows = raw_result.split("/|")
+        for(var ctr=0; ctr<raw_rows.length; ctr++){
+            split_row = raw_rows[ctr].split("/;")
+            if(split_row.length == 7){
+                object_types_array.push([split_row[2],split_row[3]])
+            }
+        }
+        */
+        //==================================================
+        
+        current_select = document.getElementById("new_actor_type")
+        current_select.innerHTML = ""
+        new_option = document.createElement("option")
+        new_option.value = ""
+        new_option.label = "-- Select one --"
+        current_select.appendChild(new_option)
+
+        raw_rows = raw_result.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 7){
+                
+                objtype_id           = split_row[0]
+                objtype_domain_id    = split_row[1]
+                objtype_actor_type   = split_row[2]
+                objtype_parent_type  = split_row[3]
+                objtype_default_flag = split_row[4]
+                objtype_status       = split_row[5]
+                
+                //alert("111")
+                if(typeIsOfType(objtype_actor_type,"actor",new_actor_level_object_types_array)){
+                    //--
+                    new_option = document.createElement("option")
+                    new_option.value = objtype_actor_type
+                    //new_option.label = "('"+objtype_actor_type+"', '"+objtype_parent_type+"')"
+                    new_option.label = objtype_actor_type
+                    current_select.appendChild(new_option)
+                    //--
+                    //console.log("YES: " + objtype_actor_type)
+                }else{
+                    //alert("NOT: " + objtype_actor_type)
+                    //console.log("NOT: " + objtype_actor_type)
+                }
+            }
+        }
+    }
+    
+    function new_actor_domain_onchange(){
+        
+        domain_full_label = document.getElementById("new_actor_domain").value
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_objecttypes2', {
+            domain_full_label   :  domain_full_label
+        }, function(data) {
+            update_new_actor_type(data.result)
+        });
+    }
+    
+    function add_actors_table_row(object_id,object_domain_full_label, object_variable_name, object_type){
+    
+        tbody = document.getElementById("actors_table_tbody")
+        //tbody.innerHTML = ""
+    
+        row = document.createElement("tr")
+        //row.id = ""
+        //row.classList.add()
+        
+        //  1. vacant
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        cell.classList.add("text-center")
+        outputHTML = ""
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        //  2. ID
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        cell.classList.add("font-italic")
+        outputHTML = ""
+        outputHTML = object_id
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        //  3. Domain
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        outputHTML = object_domain_full_label
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        //  4. Variable Name
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        outputHTML = "?" + object_variable_name
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        //  5. Object Type
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        outputHTML = object_type
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+
+        //  6. vacant
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+
+        //  7. vacant
+        cell = document.createElement("td")
+        cell.classList.add("small")
+        outputHTML = ""
+        cell.innerHTML = outputHTML
+        row.appendChild(cell);
+        
+        
+        tbody.appendChild(row)
+    }
+    
+    function add_actor_button_onclick(){
+        
+        domain_full_label = document.getElementById("new_actor_domain").value
+        variable_name     = document.getElementById("new_actor_var_name").value.replace("?","")
+        object_type       = document.getElementById("new_actor_type").value
+        
+        if((domain_full_label != "") && (variable_name != "") && (object_type != "")){
+        
+            $.getJSON($SCRIPT_ROOT + '/_add_sequence_term_actor', {
+                domain_full_label   : domain_full_label     ,
+                variable_name       : variable_name         ,
+                object_type         : object_type
+            }, function(data) {
+                add_actors_table_row("new",domain_full_label,variable_name,object_type)
+            });
+            
+            if(typeIsOfType(object_type,"actor",new_actor_level_object_types_array)){
+                $.getJSON($SCRIPT_ROOT + '/_add_sequence_term_object', {
+                    domain_full_label   : domain_full_label     ,
+                    variable_name       : variable_name         ,
+                    object_type         : object_type
+                }, function(data) {
+                    add_objects_table_row("new",domain_full_label,variable_name,object_type)
+                });
+            }
+        }
+    }
+    
+</script>
+<div class="content-section">
+    <div class="row form-group">
+        <div class="col-md-8">
+            <h3 class="display-5">Actors</h3>
+            <div class="small text-info font-italic">
+            <!--*Tooltip area thingie-->
+            * Add collapsible table here
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!--Extra area-->
+        </div>
+    </div>
+    
+    <div class="row pt-1">
+        <div class="col-md-12">
+            <div id="seqterm_cat_actors_area">
+            
+                <table class='table table-hover' id='actors_table'>
+                    <thead class='thead-dark small' id='actors_table_thead'>
+                        <tr>
+                            <th class='align-top'>                  </th>
+                            <th class='align-top'> ID               </th>
+                            <th class='align-top'> Domain           </th>
+                            <th class='align-top'> Variable Name    </th>
+                            <th class='align-top'> Object Type      </th>
+                            <th class='align-top'></th>
+                            <th class='align-top'></th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="text-info">Add new actor</span>
+                            </td>
+                            
+                            <td>
+                                
+                            </td>
+                            
+                            <td>
+                                <select class="form-control form-control-sm" id="new_actor_domain" onchange="new_actor_domain_onchange()">
+                                    <option value="">--Select one--</option>
+                                    {% for somedomain in domains %}
+                                    <option value="{{ somedomain.domain_full_label }}">{{ somedomain.readable_label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            
+                            <td>
+                                <input class="form-control form-control-sm" id="new_actor_var_name">
+                            </td>
+                            
+                            <td>
+                                <select class="form-control form-control-sm" id="new_actor_type" onchange="new_actor_type_onchange()">
+                                    <option value="">--Select a Domain first--</option>
+                                </select>
+                            </td>
+                            
+                            <td class="text-right">
+                                <button class="btn btn-info btn-sm" type="button" onclick="add_actor_button_onclick()">Add</button>
+                                <button class="btn btn-info btn-sm" type="button" onclick="clear_new_actor_fields()">Clear</button>
+                            </td>
+                            
+                            <td>
+                            </td>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="actors_table_tbody">
+                    </tbody>
+                </table>
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- [Submodals: Add Sequence Term] -->
+
+<script>
+    function add_seqterm_add_intention_parameter_area(state_predicate_info_str, sequence_term_objs_str, category_level_object_types_array){
+    
+        sequence_term_objs_array = []
+        raw_rows = sequence_term_objs_str.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length > 1){
+                sequence_term_objs_array.push([split_row[1],split_row[2]])
+            }
+        }
+        
+        parameter_area = document.getElementById("add_seqterm_add_intention_parameter_area")
+        parameter_area.innerHTML = ""
+        
+        raw_rows = state_predicate_info_str.split("/|")   
+        
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            //alert(split_row.length)
+            //  length == 44
+            
+            if(split_row.length > 3){
+                //alert(i)
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                
+                // Label
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-5")
+                new_col.innerHTML = "Not"
+                new_row.appendChild(new_col)
+                
+                // Content
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-6")
+                new_col.classList.add("text-center")
+                
+                // -- Checkbox Input
+                new_input = document.createElement("input")
+                new_input.classList.add("form-check-input")
+                new_input.type = "checkbox"
+                new_input.id = "add_seqterm_add_intention_parameter_area_negative_pred"
+                
+                new_col.appendChild(new_input)
+                
+                //-----------
+                new_row.appendChild(new_col)
+                parameter_area.appendChild(new_row)
+                
+                //--------------------------------------------------------
+                
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                
+                // Label
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-5")
+                new_col.innerHTML = "Predicate Label"
+                new_row.appendChild(new_col)
+                
+                // Content
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-6")
+                new_col.innerHTML = split_row[2]
+                
+                // -- Hidden Input
+                new_input = document.createElement("input")
+                new_input.classList.add("form-control")
+                new_input.type = "hidden"
+                new_input.disabled = true
+                new_input.id = "add_seqterm_add_intention_parameter_area_predicate_label"
+                
+                new_col.appendChild(new_input)
+                
+                //-----------
+                new_row.appendChild(new_col)
+                parameter_area.appendChild(new_row)
+                
+                //--------------------------------------------------------
+                
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                new_row.classList.add("collapse")
+                
+                // Label
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-5")
+                new_col.innerHTML = "Function String"
+                new_row.appendChild(new_col)
+                
+                // Content
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-6")
+                //new_col.innerHTML = split_row[34]
+                
+                // -- Hidden Input: Function Str
+                new_input = document.createElement("input")
+                new_input.classList.add("form-control")
+                new_input.type = "text"
+                new_input.disabled = true
+                new_input.value = split_row[34]
+                new_input.id = "add_seqterm_add_intention_parameter_area_function_str"
+                new_col.appendChild(new_input)
+                //-----------
+                new_row.appendChild(new_col)
+                parameter_area.appendChild(new_row)
+                
+                //--------------------------------------------------------
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                //new_row.classList.add("collapse")
+                
+                // Label
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-5")
+                new_col.innerHTML = "Predicate String"
+                new_row.appendChild(new_col)
+                
+                // Content
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-6")
+                //new_col.innerHTML = split_row[34]
+                
+                // -- Hidden Input: Predicate Str
+                new_input = document.createElement("input")
+                new_input.classList.add("form-control")
+                new_input.type = "text"
+                new_input.disabled = true
+                new_input.value = ""
+                new_input.id = "add_seqterm_add_intention_parameter_area_predicate_str"
+                new_col.appendChild(new_input)
+
+                // -- Hidden Input: Predicate Str (Base)
+                new_input = document.createElement("input")
+                new_input.classList.add("form-control")
+                new_input.type = "hidden"
+                new_input.disabled = true
+                new_input.value = ""
+                new_input.id = "add_seqterm_add_intention_parameter_area_predicate_str_base"
+                new_col.appendChild(new_input)
+                
+                //-----------
+                new_row.appendChild(new_col)
+                parameter_area.appendChild(new_row)
+                
+                //--------------------------------------------------------
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                
+                predicate_str = "("+split_row[2]
+                
+                for(p=0; p<6; p++){
+                    p_i = 4+(p*4)
+                    if(split_row[p_i] != ""){
+                        // Label
+                        new_col = document.createElement("div")
+                        new_col.classList.add("col-md-5")
+                        new_col.innerHTML = "Parameter: " + split_row[4+(p*4)]
+                        new_row.appendChild(new_col)
+                        
+                        // Parameter
+                        new_col = document.createElement("div")
+                        new_col.classList.add("col-md-6")
+                        
+                        //-- Hidden Input
+                        new_input = document.createElement("input")
+                        new_input.id = "add_seqterm_add_intention_parameter_area_param_var"+(p+1)
+                        new_input.type = "hidden"
+                        new_input.disabled = true
+                        new_input.value = split_row[4+(p*4)]
+                        new_input.classList.add()
+                        new_col.appendChild(new_input)
+                        
+                        predicate_str = predicate_str + " <"+split_row[4+(p*4)]+">"
+                        
+                        //-- Select Input
+                        new_select = document.createElement("select")
+                        new_select.id = "add_seqterm_add_intention_parameter_area_param_val"+(p+1)
+                        new_select.classList.add("form-control")
+                        
+                        new_option = document.createElement("option")
+                        new_option.value = ""
+                        new_option.label = "--Select one--"
+                        new_select.appendChild(new_option)
+                        
+                        //---- Option loop
+                        for(var o_ctr=0;o_ctr<sequence_term_objs_array.length;o_ctr++){
+                            //logstr = sequence_term_objs_array[o_ctr][1] + " is of type " + split_row[p_i+1]
+                            //alert("???")
+                            if(typeIsOfType(sequence_term_objs_array[o_ctr][1], split_row[p_i+1],category_level_object_types_array)){
+                                new_option = document.createElement("option")
+                                new_option.value = sequence_term_objs_array[o_ctr][0] + ";" + sequence_term_objs_array[o_ctr][1]
+                                new_option.label = sequence_term_objs_array[o_ctr][0]
+                                
+                                new_select.appendChild(new_option)
+                            }
+                        }
+                        
+                        new_col.appendChild(new_select)
+                        //new_select.addEventListener("change", update_add_seqterm_add_intention_parameter_area_predicate_str());
+                        new_select.onchange = function(){
+                            update_add_seqterm_add_intention_parameter_area_predicate_str()
+                        }
+                        //-----
+                        new_row.appendChild(new_col)
+                        
+                        
+                    }
+                }
+                
+                predicate_str = predicate_str + ")"
+                document.getElementById("add_seqterm_add_intention_parameter_area_predicate_str").value = predicate_str
+                document.getElementById("add_seqterm_add_intention_parameter_area_predicate_str_base").value = predicate_str
+                parameter_area.appendChild(new_row)
+            }
+        }
+    }
+    
+    function add_seqterm_add_required_goal_parameter_area(state_predicate_info_str, sequence_term_objs_str, category_level_object_types_array){
+        
+        sequence_term_objs_array = []
+        raw_rows = sequence_term_objs_str.split("/|")
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length > 1){
+                sequence_term_objs_array.push([split_row[1],split_row[2]])
+            }
+        }
+        
+        parameter_area = document.getElementById("add_seqterm_add_required_goal_parameter_area")
+        parameter_area.innerHTML = ""
+        
+        raw_rows = state_predicate_info_str.split("/|")   
+        
+        for(var i=0; i<raw_rows.length; i++){
+            split_row = raw_rows[i].split("/;")
+            //alert(split_row.length)
+            //  length == 44
+            
+            if(split_row.length > 3){
+                //alert(i)
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                
+                // Label
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-5")
+                new_col.innerHTML = "Not"
+                new_row.appendChild(new_col)
+                
+                // Content
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-6")
+                new_col.classList.add("text-center")
+                
+                // -- Checkbox Input
+                new_input = document.createElement("input")
+                new_input.classList.add("form-check-input")
+                new_input.type = "checkbox"
+                new_input.id = "add_seqterm_add_required_goal_parameter_area_negative_pred"
+                
+                new_col.appendChild(new_input)
+                
+                //-----------
+                new_row.appendChild(new_col)
+                parameter_area.appendChild(new_row)
+                
+                //--------------------------------------------------------
+                
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                
+                // Label
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-5")
+                new_col.innerHTML = "Predicate Label"
+                new_row.appendChild(new_col)
+                
+                // Content
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-6")
+                new_col.innerHTML = split_row[2]
+                
+                // -- Hidden Input
+                new_input = document.createElement("input")
+                new_input.classList.add("form-control")
+                new_input.type = "hidden"
+                new_input.disabled = true
+                new_input.id = "add_seqterm_add_required_goal_parameter_area_predicate_label"
+                
+                new_col.appendChild(new_input)
+                
+                //-----------
+                new_row.appendChild(new_col)
+                parameter_area.appendChild(new_row)
+                
+                //--------------------------------------------------------
+                
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                new_row.classList.add("collapse")
+                
+                // Label
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-5")
+                new_col.innerHTML = "Function String"
+                new_row.appendChild(new_col)
+                
+                // Content
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-6")
+                //new_col.innerHTML = split_row[34]
+                
+                // -- Hidden Input: Function Str
+                new_input = document.createElement("input")
+                new_input.classList.add("form-control")
+                new_input.type = "text"
+                new_input.disabled = true
+                new_input.value = split_row[34]
+                new_input.id = "add_seqterm_add_required_goal_parameter_area_function_str"
+                new_col.appendChild(new_input)
+                //-----------
+                new_row.appendChild(new_col)
+                parameter_area.appendChild(new_row)
+                
+                //--------------------------------------------------------
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                //new_row.classList.add("collapse")
+                
+                // Label
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-5")
+                new_col.innerHTML = "Predicate String"
+                new_row.appendChild(new_col)
+                
+                // Content
+                new_col = document.createElement("div")
+                new_col.classList.add("col-md-6")
+                //new_col.innerHTML = split_row[34]
+                
+                // -- Hidden Input: Predicate Str
+                new_input = document.createElement("input")
+                new_input.classList.add("form-control")
+                new_input.type = "text"
+                new_input.disabled = true
+                new_input.value = ""
+                new_input.id = "add_seqterm_add_required_goal_parameter_area_predicate_str"
+                new_col.appendChild(new_input)
+
+                // -- Hidden Input: Predicate Str (Base)
+                new_input = document.createElement("input")
+                new_input.classList.add("form-control")
+                new_input.type = "hidden"
+                new_input.disabled = true
+                new_input.value = ""
+                new_input.id = "add_seqterm_add_required_goal_parameter_area_predicate_str_base"
+                new_col.appendChild(new_input)
+                
+                //-----------
+                new_row.appendChild(new_col)
+                parameter_area.appendChild(new_row)
+                
+                //--------------------------------------------------------
+                new_row = document.createElement("div")
+                new_row.classList.add("row")
+                
+                predicate_str = "("+split_row[2]
+                
+                for(p=0; p<6; p++){
+                    p_i = 4+(p*4)
+                    if(split_row[p_i] != ""){
+                        // Label
+                        new_col = document.createElement("div")
+                        new_col.classList.add("col-md-5")
+                        new_col.innerHTML = "Parameter: " + split_row[4+(p*4)]
+                        new_row.appendChild(new_col)
+                        
+                        // Parameter
+                        new_col = document.createElement("div")
+                        new_col.classList.add("col-md-6")
+                        
+                        //-- Hidden Input
+                        new_input = document.createElement("input")
+                        new_input.id = "add_seqterm_add_required_goal_parameter_area_param_var"+(p+1)
+                        new_input.type = "hidden"
+                        new_input.disabled = true
+                        new_input.value = split_row[4+(p*4)]
+                        new_input.classList.add()
+                        new_col.appendChild(new_input)
+                        
+                        predicate_str = predicate_str + " <"+split_row[4+(p*4)]+">"
+                        
+                        //-- Select Input
+                        new_select = document.createElement("select")
+                        new_select.id = "add_seqterm_add_required_goal_parameter_area_param_val"+(p+1)
+                        new_select.classList.add("form-control")
+                        
+                        new_option = document.createElement("option")
+                        new_option.value = ""
+                        new_option.label = "--Select one--"
+                        new_select.appendChild(new_option)
+                        
+                        //---- Option loop
+                        for(var o_ctr=0;o_ctr<sequence_term_objs_array.length;o_ctr++){
+                            //logstr = sequence_term_objs_array[o_ctr][1] + " is of type " + split_row[p_i+1]
+                            //alert("???")
+                            if(typeIsOfType(sequence_term_objs_array[o_ctr][1], split_row[p_i+1],category_level_object_types_array)){
+                                new_option = document.createElement("option")
+                                new_option.value = sequence_term_objs_array[o_ctr][0] + ";" + sequence_term_objs_array[o_ctr][1]
+                                new_option.label = sequence_term_objs_array[o_ctr][0]
+                                
+                                new_select.appendChild(new_option)
+                            }
+                        }
+                        
+                        new_col.appendChild(new_select)
+                        //new_select.addEventListener("change", update_add_seqterm_add_required_goal_parameter_area_predicate_str());
+                        new_select.onchange = function(){
+                            update_add_seqterm_add_required_goal_parameter_area_predicate_str()
+                        }
+                        //-----
+                        new_row.appendChild(new_col)
+                        
+                        
+                    }
+                }
+                
+                predicate_str = predicate_str + ")"
+                document.getElementById("add_seqterm_add_required_goal_parameter_area_predicate_str").value = predicate_str
+                document.getElementById("add_seqterm_add_required_goal_parameter_area_predicate_str_base").value = predicate_str
+                parameter_area.appendChild(new_row)
+            }
+        }
+    }
+    
+    function update_add_seqterm_add_intention_parameter_area_predicate_str(){
+        //alert("!")
+        // UPDATE Hidden fields
+        base = document.getElementById("add_seqterm_add_intention_parameter_area_predicate_str_base").value
+        predicate_str = base
+        
+        //alert(base)
+        for(var param_ctr=1;param_ctr<=6;param_ctr++){
+            try{
+                _val = document.getElementById("add_seqterm_add_intention_parameter_area_param_val"+param_ctr).value
+                _result = _val.split(";")
+                param_val = _result[0]
+                
+                //alert(_result)
+                
+                if(param_val != ""){
+                    param_var = document.getElementById("add_seqterm_add_intention_parameter_area_param_var"+param_ctr).value
+                    
+                    predicate_str = predicate_str.replace("<"+param_var+">", param_val)
+                }
+            }catch(err){
+                //alert("Error: " + param_ctr)
+            }
+        }
+        document.getElementById("add_seqterm_add_intention_parameter_area_predicate_str").value = predicate_str
+        
+    }
+    
+    function update_add_seqterm_add_required_goal_parameter_area_predicate_str(){
+        //alert("!")
+        // UPDATE Hidden fields
+        base = document.getElementById("add_seqterm_add_required_goal_parameter_area_predicate_str_base").value
+        predicate_str = base
+        
+        //alert(base)
+        for(var param_ctr=1;param_ctr<=6;param_ctr++){
+            try{
+                _val = document.getElementById("add_seqterm_add_required_goal_parameter_area_param_val"+param_ctr).value
+                _result = _val.split(";")
+                param_val = _result[0]
+                
+                //alert(_result)
+                
+                if(param_val != ""){
+                    param_var = document.getElementById("add_seqterm_add_required_goal_parameter_area_param_var"+param_ctr).value
+                    
+                    predicate_str = predicate_str.replace("<"+param_var+">", param_val)
+                }
+            }catch(err){
+                //alert("Error: " + param_ctr)
+            }
+        }
+        document.getElementById("add_seqterm_add_required_goal_parameter_area_predicate_str").value = predicate_str
+        
+    }
+    
+    function add_seqterm_add_intention_predicate_onchange(){
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_state_predicate_def_info', {
+            domain_id       :   document.getElementById("sequence_term_cat_domain_id").value,
+            definition_str  :   document.getElementById("add_seqterm_add_intention_predicate").value    
+        }, function(data) {
+            
+            state_predicate_info_str = data.result
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_sequence_term_objects', {
+                domain_full_label   :  document.getElementById("sequence_term_cat_domain_full_label").value 
+            }, function(data) {
+                
+                sequence_term_objs_str = data.result
+                
+                $.getJSON($SCRIPT_ROOT + '/_get_objecttypes', {
+                    domain_id   :  document.getElementById("sequence_term_cat_domain_id").value 
+                }, function(data) {
+                
+                    objecttype_str = data.result
+                    category_level_object_types_array = []
+                    update_object_types_array(category_level_object_types_array, objecttype_str)
+                    
+                    add_seqterm_add_intention_parameter_area(state_predicate_info_str, sequence_term_objs_str, category_level_object_types_array)
+                });
+            });
+        });
+    }
+    
+    function add_seqterm_add_required_goal_predicate_onchange(){
+        
+        $.getJSON($SCRIPT_ROOT + '/_get_state_predicate_def_info', {
+            domain_id       :   document.getElementById("sequence_term_cat_domain_id").value,
+            definition_str  :   document.getElementById("add_seqterm_add_required_goal_predicate").value    
+        }, function(data) {
+            
+            state_predicate_info_str = data.result
+            
+            $.getJSON($SCRIPT_ROOT + '/_get_sequence_term_objects', {
+                domain_full_label   :  document.getElementById("sequence_term_cat_domain_full_label").value 
+            }, function(data) {
+                
+                sequence_term_objs_str = data.result
+                
+                $.getJSON($SCRIPT_ROOT + '/_get_objecttypes', {
+                    domain_id   :  document.getElementById("sequence_term_cat_domain_id").value 
+                }, function(data) {
+                
+                    objecttype_str = data.result
+                    category_level_object_types_array = []
+                    update_object_types_array(category_level_object_types_array, objecttype_str)
+                    
+                    add_seqterm_add_required_goal_parameter_area(state_predicate_info_str, sequence_term_objs_str, category_level_object_types_array)
+                });
+            });
+        });
+    }
+    
+    function update_add_seqterm_current_intentions_table_tbody(){
+    
+        // VARIABLES
+        add_seqterm_series = document.getElementById("add_seqterm_series").value
+        intention_actor_array = document.getElementById("add_seqterm_add_intention_actor").value.split(";")
+        
+        intention_actor = intention_actor_array[0]
+        
+        intention_target_state_predicate = document.getElementById("add_seqterm_add_intention_parameter_area_predicate_str").value
+        //alert(document.getElementById("add_seqterm_add_intention_parameter_area_negative_pred").checked)
+        if(document.getElementById("add_seqterm_add_intention_parameter_area_negative_pred").checked){
+            intention_target_state_predicate = "(not " + intention_target_state_predicate + ")"
+        }
+        
+        intention_row = document.getElementById("add_seqterm_intention_row").value
+        
+        
+        // TBDOY UPDATE
+        tbody = document.getElementById("add_seqterm_current_intentions_table_tbody")
+        //tbody.innerHTML = ""
+        
+        new_row = document.createElement("tr")
+        
+        //-- Series
+        new_cell = document.createElement("td")
+        new_cell.classList.add("text-center")
+        new_cell.innerHTML = add_seqterm_series
+
+        //---- Hidden input: add_seqterm_current_intention_row / main_object
+        
+        if(intention_actor_array[1] != "admin"){
+            new_input = document.createElement("input")
+            new_input.id = "add_seqterm_current_intention_row" + intention_row + "_intention_main_object"
+            new_input.type = "hidden"
+            new_input.value = "("+intention_actor_array[0]+" - "+intention_actor_array[1]+")"
+        }else{
+            
+            val = document.getElementById("add_seqterm_add_intention_parameter_area_param_val1").value
+            result = val.split(";")
+            
+            new_input = document.createElement("input")
+            new_input.id = "add_seqterm_current_intention_row" + intention_row + "_intention_main_object"
+            new_input.type = "hidden"
+            new_input.value = "("+result[0]+" - "+result[1]+")"
+        }
+        new_cell.appendChild(new_input)
+        
+        //---- Hidden input: add_seqterm_current_intention_row / supporting_objects
+        new_input = document.createElement("input")
+        new_input.id = "add_seqterm_current_intention_row" + intention_row + "_intention_supporting_objects"
+        new_input.type = "hidden"
+        
+        //supporting_objects_str = ""
+        
+        for(var so_ctr=1;so_ctr<=6;so_ctr++){
+            try{
+                val = document.getElementById("add_seqterm_add_intention_parameter_area_param_val"+so_ctr).value
+                result = val.split(";")
+                new_obj = "(" + result[0] + " - " + result[1] + ")"
+                
+                if(so_ctr == 1){
+                    supporting_objects_str = new_obj
+                }else{
+                    supporting_objects_str = supporting_objects_str + ";" + new_obj
+                }
+                
+            }catch(err){
+                break
+            }
+        }
+        new_input.value = supporting_objects_str
+        
+        new_cell.appendChild(new_input)
+        
+        
+        //---- Hidden input: add_seqterm_current_intention_row / negative_pred
+        new_input = document.createElement("input")
+        new_input.id = "add_seqterm_current_intention_row" + intention_row + "_negative_pred"
+        new_input.type = "hidden"
+        new_input.value = document.getElementById("add_seqterm_add_intention_parameter_area_negative_pred").checked
+        new_cell.appendChild(new_input)
+        
+        //---- Hidden input: add_seqterm_current_intention_row / intention_actor
+        new_input = document.createElement("input")
+        new_input.id = "add_seqterm_current_intention_row" + intention_row + "_intention_actor"
+        new_input.type = "hidden"
+        new_input.value = intention_actor
+        new_cell.appendChild(new_input)
+        
+        //---- Hidden input: add_seqterm_current_intention_row / intention_target_state_predicate
+        new_input = document.createElement("input")
+        new_input.id = "add_seqterm_current_intention_row" + intention_row + "_intention_target_state_predicate"
+        new_input.type = "hidden"
+        new_input.value = intention_target_state_predicate
+        new_cell.appendChild(new_input)
+        
+        //---- Hidden input: add_seqterm_current_intention_row / intention_full_str
+        new_input = document.createElement("input")
+        new_input.id = "add_seqterm_current_intention_row" + intention_row + "_intention_full_str"
+        new_input.type = "hidden"
+        new_input.value = "(intends "+intention_actor+" "+intention_target_state_predicate+")"
+        new_cell.appendChild(new_input)
+        
+        
+        new_row.appendChild(new_cell)
+        
+        //-- Predicate
+        new_cell = document.createElement("td")
+        //new_cell.classList.add()
+        //new_cell.innerHTML = "(intends "+intention_actor+" "+intention_target_state_predicate+")"
+        
+        new_span = document.createElement("span")
+        new_span.innerHTML = "(intends "+intention_actor+" "+intention_target_state_predicate+")"
+        new_cell.appendChild(new_span)
+        
+        new_row.appendChild(new_cell)
+        
+        
+        //----------------
+        tbody.appendChild(new_row)
+        document.getElementById("add_seqterm_series").value = parseInt(add_seqterm_series) + 1
+        document.getElementById("add_seqterm_intention_row").value = parseInt(intention_row) + 1
+        
+        /*
+        if((parseInt(intention_row) + 1) >= 4){
+            document.getElementById("add_seqterm_add_intention_button").disabled = true
+        }
+        */
+    }
+    
+    function update_add_seqterm_current_required_goals_table_tbody(){
+    
+        // VARIABLES
+        add_seqterm_series = document.getElementById("add_seqterm_series").value
+        
+        for(var p=1;p<=6; p++){
+            try{
+                _val = document.getElementById("add_seqterm_add_required_goal_parameter_area_param_val"+p).value
+                
+                _pair = _val.split(";")
+                _label = _pair[0]
+                _type = _pair[1]
+                new_supporting_object = "("+_label+" - "+_type+")"
+                for(var so=1; so<=10; so++){
+                    try{
+                        supporting_objects = document.getElementById("add_seqterm_current_intention_row"+so+"_intention_supporting_objects").value
+                        if(!supporting_objects.includes(new_supporting_object)){
+                            if(supporting_objects != ""){
+                                document.getElementById("add_seqterm_current_intention_row"+so+"_intention_supporting_objects").value = supporting_objects + ";" + new_supporting_object
+                            }else{
+                                document.getElementById("add_seqterm_current_intention_row"+so+"_intention_supporting_objects").value = new_supporting_object
+                            }
+                        }
+                    }catch(err){
+                        
+                    }
+                }
+            }catch(err){
+            
+            }
+        }
+        
+        required_goal_target_state_predicate = document.getElementById("add_seqterm_add_required_goal_parameter_area_predicate_str").value
+        //alert(document.getElementById("add_seqterm_add_required_goal_parameter_area_negative_pred").checked)
+        if(document.getElementById("add_seqterm_add_required_goal_parameter_area_negative_pred").checked){
+            required_goal_target_state_predicate = "(not " + required_goal_target_state_predicate + ")"
+        }
+        
+        required_goal_row = document.getElementById("add_seqterm_required_goal_row").value
+        
+        
+        // TBDOY UPDATE
+        tbody = document.getElementById("add_seqterm_current_required_goals_table_tbody")
+        //tbody.innerHTML = ""
+        
+        new_row = document.createElement("tr")
+        
+        //-- Series
+        new_cell = document.createElement("td")
+        new_cell.classList.add("text-center")
+        new_cell.innerHTML = add_seqterm_series
+        
+        //---- Hidden input: add_seqterm_current_required_goal_row / required_goal_full_str
+        new_input = document.createElement("input")
+        new_input.id = "add_seqterm_current_required_goal_row" + required_goal_row + "_required_goal_full_str"
+        new_input.type = "hidden"
+        new_input.value = required_goal_target_state_predicate
+        new_cell.appendChild(new_input)
+        
+        new_row.appendChild(new_cell)
+        
+        //-- Predicate
+        new_cell = document.createElement("td")
+        //new_cell.classList.add()
+        //new_cell.innerHTML = "(intends "+required_goal_actor+" "+required_goal_target_state_predicate+")"
+        
+        new_span = document.createElement("span")
+        new_span.innerHTML = required_goal_target_state_predicate
+        new_cell.appendChild(new_span)
+        
+        new_row.appendChild(new_cell)
+        
+        
+        //----------------
+        tbody.appendChild(new_row)
+        document.getElementById("add_seqterm_series").value = parseInt(add_seqterm_series) + 1
+        document.getElementById("add_seqterm_required_goal_row").value = parseInt(required_goal_row) + 1
+        
+        if((parseInt(required_goal_row) + 1) >= 10){
+            document.getElementById("add_seqterm_add_required_goal_button").disabled = true
+        }
+    }
+    
+    function add_seqterm_add_intention_button_onclick(){
+        update_add_seqterm_current_intentions_table_tbody()
+        
+    }
+    
+    function add_seqterm_add_required_goal_predicate_button_onclick(){
+        update_add_seqterm_current_required_goals_table_tbody()
+    }
+    
+    function add_seqterm_submodal_submit(){
+        
+        
+        //Target output format:
+        domain_full_label                     = document.getElementById("sequence_term_cat_domain").value
+        visibility                            = document.getElementById("sequence_term_cat_visibility").value
+        sequence_term_cat_label               = document.getElementById("add_seqterm_sequence_term_cat_label").value
+        main_label                            = document.getElementById("add_seqterm_mainlabel").value
+        //main_label_str                        = smallify(main_label)
+        sub_label                             = document.getElementById("add_seqterm_sublabel").value
+        //sub_label_str                         = smallify(sub_label)
+        
+        /*
+        name_label_str                        = sequence_term_cat_label + "_" + main_label_str
+        if(sub_label_str != ""){
+            name_label_str = name_label_str + "_" + sub_label_str
+        }
+        */
+        term_sequence                         = document.getElementById("add_seqterm_term_sequence").value
+        //term_sequence_grouping_label          = name_label_str + "_" + term_sequence
+        
+        prerequisite_target_predicates = ""
+        first = true
+        
+        for(var series_ctr=1;series_ctr<=10;series_ctr++){
+            try{
+                required_goal = document.getElementById("add_seqterm_current_required_goal_row"+series_ctr+"_required_goal_full_str").value
+                
+                if(required_goal != ""){
+                    
+                    if(first){
+                        first = false
+                        prerequisite_target_predicates = required_goal
+                    }else{
+                        prerequisite_target_predicates = prerequisite_target_predicates + ";" + required_goal
+                    }
+                }
+                
+            }catch(err){
+                //alert("Error: required_goal" + series_ctr)
+            }
+        }
+        
+        //alert(prerequisite_target_predicates)
+        
+        for(var series_ctr=1;series_ctr<=5;series_ctr++){
+            series                                = series_ctr
+            
+            //val = document.getElementById("add_seqterm_add_intention_parameter_area_param_val1").value
+            //result = val.split(";")
+            //main_object                           = "(" + result[0] + " - " + result[1] + ")"
+            try{
+                main_object                           = document.getElementById("add_seqterm_current_intention_row"+series_ctr+"_intention_main_object").value
+                supporting_objects                    = document.getElementById("add_seqterm_current_intention_row"+series_ctr+"_intention_supporting_objects").value
+                
+                intention_actor                       = document.getElementById("add_seqterm_current_intention_row"+series_ctr+"_intention_actor").value
+                intention_target_state_predicate      = document.getElementById("add_seqterm_current_intention_row"+series_ctr+"_intention_target_state_predicate").value
+                intention_full_str                    = document.getElementById("add_seqterm_current_intention_row"+series_ctr+"_intention_full_str").value
+                //intention_type                        = 
+                //predecessor_terms                     = 
+                //direct_chained_with                   = 
+                //successors                            = 
+                //prerequisite_present_predicates       = 
+                prerequisite_target_predicates        = prerequisite_target_predicates
+                //required_objects                      = 
+                //in_chapter_pattern                    = 
+                //vacant2                               = 
+                //vacant3                               = 
+                //status                                = 
+                //notes                                 = 
+                
+                if(!main_object){
+                    break
+                }
+                
+                // ----- Sequence Term Category
+                
+                $.getJSON($SCRIPT_ROOT + '/_add_sequence_term_category', {
+                    domain_full_label                   : domain_full_label                  ,
+                    visibility                          : visibility                         ,
+                    sequence_term_cat_label             : sequence_term_cat_label            ,
+                    main_label                          : main_label                         ,
+                    sub_label                           : sub_label                          ,
+                    term_sequence                       : term_sequence                      ,
+                    series                              : series                             ,
+                    main_object                         : main_object                        ,
+                    supporting_objects                  : supporting_objects                 ,
+                    intention_actor                     : intention_actor                    ,
+                    intention_target_state_predicate    : intention_target_state_predicate   ,
+                    intention_full_str                  : intention_full_str                 ,
+                    prerequisite_target_predicates      : prerequisite_target_predicates
+                }, function(data) {
+         
+                });
+            }catch(err){
+            
+            }
+        }
+        
+        
+        
+        
+    
+    }
+    
+    
+</script>
+
+<div class="modal fade" id="add_seqterm_submodal" role="dialog">
+
+    <div class="modal-dialog" style="max-width: 800px;">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+      
+        <div class="modal-header">
+          <h4 class="modal-title">Add Sequence Term</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="small text-info font-italic">A sequence term may have multiple intentions.</p>
+            
+            <!-- Hidden data fields -->
+            <input type="hidden" id="add_seqterm_sequence_term_cat_label">
+            <input type="hidden" id="add_seqterm_term_sequence">
+            <input type="hidden" id="add_seqterm_series" value="1">
+            <input type="hidden" id="add_seqterm_intention_row" value="1">
+            <input type="hidden" id="add_seqterm_required_goal_row" value="1">
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    Main label
+                </div>
+                
+                <div class="col-md-4">
+                    <input class="form-control" type="text" id="add_seqterm_mainlabel">
+                </div>
+                
+                <div class="col-md-2">
+                    Sub-label
+                </div>
+                
+                <div class="col-md-3">
+                    <input class="form-control" type="text" id="add_seqterm_sublabel">
+                </div>
+                
+            </div>
+            
+            <div class="dropdown-divider"></div>
+            
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    Intention Actor
+                </div>
+                <div class="col-md-9">
+                    <select class="form-control" id="add_seqterm_add_intention_actor">
+                        <option>--Select one--</option>
+                    </select>
+                </div>
+                
+            </div>
+            
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    Intention Predicate
+                </div>
+                <div class="col-md-9">
+                    <select 
+                        class="form-control" 
+                        id="add_seqterm_add_intention_predicate"
+                        onchange="add_seqterm_add_intention_predicate_onchange()"
+                    >
+                        <option>--Select one--</option>
+                    </select>
+                </div>
+                
+            </div>
+            
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    
+                </div>
+                <div class="col-md-9">
+                    <div id="add_seqterm_add_intention_parameter_area" class="content-section">
+
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    <!-- blank space -->
+                </div>
+                <div class="col-md-9">
+                    <button 
+                        type="button" 
+                        class="btn btn-info btn-sm" 
+                        onclick="add_seqterm_add_intention_button_onclick()"
+                        id="add_seqterm_add_intention_button"
+                    >
+                        Add Intention
+                    </button>
+                </div>
+                
+            </div>
+            
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    Current Predicates
+                </div>
+                <div class="col-md-9">
+                    <div id="add_seqterm_current_intentions_area" class="small">
+                    
+                        <table class="table table-hover" id="add_seqterm_current_intentions_table">
+                            <thead class="thead-dark small" id="seqterms_table_thead">
+                                <tr>
+                                    <th class="align-top">Series</th>
+                                    <th class="align-top">Predicate</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody id="add_seqterm_current_intentions_table_tbody">
+                            </tbody>
+                        </table>
+                    
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dropdown-divider"></div>
+            
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    Required Goal Predicates
+                </div>
+                <div class="col-md-9">
+                    <select 
+                        class="form-control" 
+                        id="add_seqterm_add_required_goal_predicate"
+                        onchange="add_seqterm_add_required_goal_predicate_onchange()"
+                    >
+                        <option>--Select one--</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    <!-- blank space -->
+                </div>
+                <div class="col-md-9">
+                    <div id="add_seqterm_add_required_goal_parameter_area" class="content-section">
+                             
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    <!-- blank space -->
+                </div>
+                <div class="col-md-9">
+                    <button 
+                        type="button" 
+                        class="btn btn-info btn-sm" 
+                        onclick="add_seqterm_add_required_goal_predicate_button_onclick()"
+                        id="add_seqterm_add_required_goal_predicate_button"
+                    >
+                        Add Required Goal
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row pt-1">
+       
+                <div class="col-md-3">
+                    Required Goal Predicates
+                </div>
+                <div class="col-md-9">
+                    <div id="add_seqterm_required_goal_predicates_area" class="small">
+                    
+                        <table class="table table-hover" id="add_seqterm_current_required_goals_table">
+                            <thead class="thead-dark small" id="seqterms_table_thead">
+                                <tr>
+                                    <th class="align-top">Series</th>
+                                    <th class="align-top">Predicate</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody id="add_seqterm_current_required_goals_table_tbody">
+                            </tbody>
+                        </table>
+                    
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default border-info" data-dismiss="modal" onclick="add_seqterm_submodal_submit()">Submit Sequence Term</button>
+          <button type="button" class="btn btn-default border-info" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+      
+    </div>
+</div>
+        
+{% endblock content %}

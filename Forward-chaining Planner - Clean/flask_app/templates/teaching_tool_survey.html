@@ -1,0 +1,241 @@
+{% extends "layout_exercise_template1.html" %}
+
+{% block content %}
+
+    <script>
+    
+        function ValidateEmail(inputId){
+            //alert(inputId)
+            var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+            var inputField = document.getElementById(inputId)
+            
+            if(inputField.value.match(mailformat)){
+                return true;
+            }else{
+                alert("You have entered an invalid email address!");
+                return false;
+            }
+        }
+        function SubmitAssessment(){
+            $.getJSON($SCRIPT_ROOT + '/_submit_teaching_tool_survey', {
+                first_name                  : document.getElementById("first_name").value               ,
+                last_name                   : document.getElementById("last_name").value                ,
+                email                       : document.getElementById("email").value                    ,
+                affiliate_school            : document.getElementById("affiliate_school").value         ,
+                subject                     : document.getElementById("subject").value                  ,
+                number_of_sections          : document.getElementById("number_of_sections").value       ,
+                total_number_of_students    : document.getElementById("total_number_of_students").value ,
+                
+                assessment_question_01      : document.getElementById("assessment_question_01").value   ,
+                assessment_question_02      : document.getElementById("assessment_question_02").value   ,
+                assessment_question_03      : document.getElementById("assessment_question_03").value   
+                //assessment_question_04      : document.getElementById("assessment_question_04").value   ,
+                //assessment_question_05      : document.getElementById("assessment_question_05").value   ,
+                //assessment_question_06      : document.getElementById("assessment_question_06").value   ,
+                //assessment_question_07      : document.getElementById("assessment_question_07").value   ,
+                //assessment_question_08      : document.getElementById("assessment_question_08").value   ,
+                //assessment_question_09      : document.getElementById("assessment_question_09").value   ,
+                //assessment_question_10      : document.getElementById("assessment_question_10").value
+                
+            }, function(data) {
+                alert("Survey submitted! Thank you for your participation");
+            });
+        }
+        function grade_hover(grade, id){
+            
+            //alert(id)
+            
+            switch(grade){
+            
+            case 1: document.getElementById(id + "_grade_description").innerHTML = "Not helpful at all"
+                    break;
+            case 2: document.getElementById(id + "_grade_description").innerHTML = "ISLA has a tiny glimmer of potential"
+                    break;
+            case 3: document.getElementById(id + "_grade_description").innerHTML = "Useful, but needs mores improvements in many areas"
+                    break;
+            case 4: document.getElementById(id + "_grade_description").innerHTML = "Very useful, needs some improvements in some key areas"
+                    break;
+            case 5: document.getElementById(id + "_grade_description").innerHTML = "ISLA is the perfect embodiment of a teaching tool"
+                    break;
+                                        
+            }
+            
+            for (i = 1; i <= 5; i++){
+                if(i <= grade){
+                    document.getElementById(id + "_" + i).innerHTML = "star"
+                }else{
+                    document.getElementById(id + "_" + i).innerHTML = "star_border"
+                }
+            }
+            
+            document.getElementById("assessment_question_01").value = grade
+        }
+    
+    </script>
+    
+    
+    
+    
+    <div class="row">
+      <div class="col-md-8">
+        ISLA as a Teaching Tool Assessment
+        <a href="#add_review_content" data-toggle="collapse" aria-expanded="true" class="navbar-toggle btn btn-info btn-sm">
+        <i class="fas fa-caret-down"></i>
+        </a>
+        <br><br>
+      </div>
+    </div>
+    
+    <div class="row show" id="add_review_content">
+      <div class="col-md-12">
+        <div class="content-section">
+    
+              <div class="row pt-1">
+                <div class="col-md-12">
+                  <br>
+                  <span class="text-secondary font-weight-bold">
+                    Teacher Information
+                  </span>
+                </div>
+              </div>
+    
+              <div class="row pt-1">
+                <div class="col-md-3">
+                First Name
+                </div>
+                <div class="col-md-4">
+                <input type="text" class="form-control" id="first_name" value="">
+                </div>
+              </div>
+              
+              <div class="row pt-1">
+                <div class="col-md-3">
+                Last Name  
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="last_name" value="">
+                </div>
+              </div>
+
+              
+              <div class="row pt-1">
+                <div class="col-md-3">
+                Email address <span class="text-danger">*</span>
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="email" value="" onchange="ValidateEmail('user_email');">
+                </div>
+              </div>
+              
+              <div class="row pt-1">
+                <div class="col-md-3">
+                Affiliated School<span class="text-danger">*</span>
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="affiliate_school" value="">
+                </div>
+              </div>
+              
+              <div class="row pt-1">
+                <div class="col-md-3">
+                Subject<span class="text-danger">*</span>
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="subject" value="">
+                </div>
+              </div>
+
+              <div class="row pt-1">
+                <div class="col-md-3">
+                Number of Sections<span class="text-danger">*</span>
+                </div>
+                <div class="col-md-1">
+                  <input type="text" class="form-control" id="number_of_sections" value="">
+                </div>
+              </div>
+
+              <div class="row pt-1">
+                <div class="col-md-3">
+                Total participating students<span class="text-danger">*</span>
+                </div>
+                <div class="col-md-1">
+                  <input type="text" class="form-control" id="total_number_of_students" value="" length="4">
+                </div>
+              </div>
+              
+        </div>
+      </div>
+    </div>
+    
+    <div class="row show" id="add_review_content">
+      <div class="col-md-12">
+        <div class="content-section">
+    
+              <div class="row pt-1">
+                <div class="col-md-12">
+                  <br>
+                  <span class="text-secondary font-weight-bold">
+                    Assessment
+                  </span>
+                </div>
+              </div>
+    
+              <div class="row pt-1">
+                <div class="col-md-3">
+                General Usefulness Grade
+                </div>
+
+                <div class="col-md-4">
+                    <span style="cursor: pointer;" id="question_1_1" _ngcontent-auf-c19="" onmouseover="grade_hover(1, 'question_1')" onclick="grade_hover(1, 'question_1')" class="material-icons icon-image-preview">star_border</span>
+                    <span style="cursor: pointer;" id="question_1_2" _ngcontent-auf-c19="" onmouseover="grade_hover(2, 'question_1')" onclick="grade_hover(2, 'question_1')" class="material-icons icon-image-preview">star_border</span>
+                    <span style="cursor: pointer;" id="question_1_3" _ngcontent-auf-c19="" onmouseover="grade_hover(3, 'question_1')" onclick="grade_hover(3, 'question_1')" class="material-icons icon-image-preview">star_border</span>
+                    <span style="cursor: pointer;" id="question_1_4" _ngcontent-auf-c19="" onmouseover="grade_hover(4, 'question_1')" onclick="grade_hover(4, 'question_1')" class="material-icons icon-image-preview">star_border</span>
+                    <span style="cursor: pointer;" id="question_1_5" _ngcontent-auf-c19="" onmouseover="grade_hover(5, 'question_1')" onclick="grade_hover(5, 'question_1')" class="material-icons icon-image-preview">star_border</span>
+                    
+                    <div>
+                        <span id="question_1_grade_description" class="font-italic text-info">
+                        Potato
+                        </span>
+                    </div>
+
+                    <input type="hidden" id="assessment_question_01" value="0">
+                </div>
+              </div>
+              
+              <div class="row pt-1">
+                <div class="col-md-3">
+                Review Write-up<span class="text-danger">*</span>
+                </div>
+                <div class="col-md-4">
+                  <textarea class='form-control'  id="assessment_question_02" rows="6" cols="32"></textarea>
+                </div>
+              </div>
+              
+              <div class="row pt-1">
+                <div class="col-md-3">
+                Adjectives<span class="text-danger">*</span>
+                </div>
+                <div class="col-md-4">
+                  <textarea class='form-control'  id="assessment_question_03" rows="3" cols="32"></textarea>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-12">
+                  <hr>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-info btn-sm" id="submit_assessment" onclick="SubmitAssessment();">Submit</button>
+                  </div>
+                  
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+    
+{% endblock content %}

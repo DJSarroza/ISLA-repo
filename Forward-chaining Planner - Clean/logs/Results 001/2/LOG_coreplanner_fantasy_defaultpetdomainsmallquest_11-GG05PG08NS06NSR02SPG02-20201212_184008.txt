@@ -1,0 +1,39 @@
+2020-12-12 19:16:34.370609: Goal graph nodes: 25029
+2020-12-12 19:16:34.370609: Goal graph action inventory:
+	creaturegetsitemfromplace:945
+	creaturelosesitematplace:945
+	creaturegiveitemtocreature:7560
+	steal:7560
+	creaturekillcreature_withweapon:1080
+	creaturekillcreature_noweapon:1080
+	creatureinjurescreature_withweapon:1080
+	creatureinjurescreature_noweapon:1080
+	delegate_getquest:3240
+	move:405
+	creaturebleedsout:9
+	creaturebleedsout2:45
+	--------------
+	25029
+2020-12-12 19:16:34.392747: [02...] Initializing planner . . .
+2020-12-12 19:16:34.392747 	 [raw][['at', ['Kiana', 'person'], ['plains', 'location']], ['alive', ['Kiana', 'person']]]
+2020-12-12 19:16:34.392747 	 [+]['at', ['Kiana', 'person'], ['plains', 'location']]
+2020-12-12 19:16:34.392747 	 [+]['alive', ['Kiana', 'person']]
+2020-12-12 19:16:34.655762 layer: 0; nodes: 1
+2020-12-12 19:16:37.014263 [Try #1]Plan graph generation execution time:
+2020-12-12 19:16:37.014263 	2.621516 second/s
+2020-12-12 19:16:37.014263 	0.043691933333333335 minute/s
+2020-12-12 19:16:37.014263: Completed plan cycle: [02]
+2020-12-12 19:16:37.014263: Total nodes    : 2
+2020-12-12 19:16:37.014263: Goal nodes     : 2
+2020-12-12 19:16:37.014263: Author's Goals  : [['at', ['Kiana', 'person'], ['plains', 'location']], ['alive', ['Kiana', 'person']]]
+2020-12-12 19:16:37.014263: Achieved intentions : 
+	['at', ['Kiana', 'person'], ['plains', 'location']]
+	['alive', ['Kiana', 'person']]
+2020-12-12 19:16:37.014263: Achieved author's goals : 
+	['at', ['Kiana', 'person'], ['plains', 'location']]:2
+	['alive', ['Kiana', 'person']]:2
+2020-12-12 19:16:37.029884: Action breakdown:
+	None:1
+	creatureinjurescreature_noweapon:1
+2020-12-12 19:16:37.029884: Solution for: None
+2020-12-12 19:16:37.083254: Solution for: None

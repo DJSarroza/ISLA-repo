@@ -1,0 +1,49 @@
+2020-12-12 12:35:44.793279: Goal graph nodes: 10980
+2020-12-12 12:35:44.793279: Goal graph action inventory:
+	travel:360
+	delegate_getquest:600
+	get_item_from_location:600
+	lose_item_at_location:600
+	give_item:3000
+	steal_item:3000
+	kill_withweapon:600
+	kill_noweapon:600
+	injure_withweapon:600
+	injure_noweapon:600
+	dummy_action1:25
+	modify_zca_pos:25
+	dummy_action3:10
+	travel_from_sanctum:120
+	bleeds_out:30
+	bleeds_out2:30
+	dummy_action2:25
+	modify_zca_neg:25
+	dummy_action4:10
+	travel_to_sanctum:120
+	--------------
+	10980
+2020-12-12 12:35:44.830347: [06...] Initializing planner . . .
+2020-12-12 12:35:44.831345 	 [raw][['at', ['Kyle', 'person'], ['forest', 'location']], ['alive', ['Bob', 'creature']], ['at', ['Bob', 'creature'], ['forest', 'location']]]
+2020-12-12 12:35:44.831345 	 [+]['at', ['Kyle', 'person'], ['forest', 'location']]
+2020-12-12 12:35:44.832341 	 [+]['alive', ['Bob', 'creature']]
+2020-12-12 12:35:44.833339 	 [+]['at', ['Bob', 'creature'], ['forest', 'location']]
+2020-12-12 12:35:46.150072 [Try #1]Plan graph generation execution time:
+2020-12-12 12:35:46.150072 	1.31474 second/s
+2020-12-12 12:35:46.150072 	0.021912333333333332 minute/s
+2020-12-12 12:35:46.150072: Completed plan cycle: [06]
+2020-12-12 12:35:46.150072: Total nodes    : 2
+2020-12-12 12:35:46.150072: Goal nodes     : 2
+2020-12-12 12:35:46.150072: Author's Goals  : [['at', ['Kyle', 'person'], ['forest', 'location']], ['alive', ['Bob', 'creature']], ['at', ['Bob', 'creature'], ['forest', 'location']]]
+2020-12-12 12:35:46.150072: Achieved intentions : 
+	['at', ['Kyle', 'person'], ['forest', 'location']]
+	['alive', ['Bob', 'creature']]
+	['at', ['Bob', 'creature'], ['forest', 'location']]
+2020-12-12 12:35:46.150072: Achieved author's goals : 
+	['at', ['Kyle', 'person'], ['forest', 'location']]:2
+	['alive', ['Bob', 'creature']]:2
+	['at', ['Bob', 'creature'], ['forest', 'location']]:2
+2020-12-12 12:35:46.150072: Action breakdown:
+	None:1
+	dummy_action2:1
+2020-12-12 12:35:46.163859: Solution for: None
+2020-12-12 12:35:46.196495: Solution for: None

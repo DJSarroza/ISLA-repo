@@ -1,0 +1,47 @@
+2020-12-12 12:17:02.600917: Goal graph nodes: 10980
+2020-12-12 12:17:02.600917: Goal graph action inventory:
+	travel:360
+	delegate_getquest:600
+	get_item_from_location:600
+	lose_item_at_location:600
+	give_item:3000
+	steal_item:3000
+	kill_withweapon:600
+	kill_noweapon:600
+	injure_withweapon:600
+	injure_noweapon:600
+	dummy_action1:25
+	modify_zca_pos:25
+	dummy_action3:10
+	travel_from_sanctum:120
+	bleeds_out:30
+	bleeds_out2:30
+	dummy_action2:25
+	modify_zca_neg:25
+	dummy_action4:10
+	travel_to_sanctum:120
+	--------------
+	10980
+2020-12-12 12:17:02.634576: [04...] Initializing planner . . .
+2020-12-12 12:17:02.634576 	 [raw][['at', ['Bob', 'creature'], ['mountains', 'location']], ['alive', ['Bob', 'creature']]]
+2020-12-12 12:17:02.634576 	 [+]['at', ['Bob', 'creature'], ['mountains', 'location']]
+2020-12-12 12:17:02.634576 	 [+]['alive', ['Bob', 'creature']]
+2020-12-12 12:17:05.690855 [Try #1]Plan graph generation execution time:
+2020-12-12 12:17:05.691852 	3.055282 second/s
+2020-12-12 12:17:05.691852 	0.05092136666666667 minute/s
+2020-12-12 12:17:05.692854: Completed plan cycle: [04]
+2020-12-12 12:17:05.692854: Total nodes    : 3
+2020-12-12 12:17:05.692854: Goal nodes     : 2
+2020-12-12 12:17:05.692854: Author's Goals  : [['at', ['Bob', 'creature'], ['mountains', 'location']], ['alive', ['Bob', 'creature']]]
+2020-12-12 12:17:05.692854: Achieved intentions : 
+	['alive', ['Bob', 'creature']]
+	['at', ['Bob', 'creature'], ['mountains', 'location']]
+2020-12-12 12:17:05.700829: Achieved author's goals : 
+	['alive', ['Bob', 'creature']]:3
+	['at', ['Bob', 'creature'], ['mountains', 'location']]:2
+2020-12-12 12:17:05.701826: Action breakdown:
+	None:1
+	travel:1
+	delegate_getquest:1
+2020-12-12 12:17:05.726758: Solution for: None
+2020-12-12 12:17:05.770641: Solution for: None

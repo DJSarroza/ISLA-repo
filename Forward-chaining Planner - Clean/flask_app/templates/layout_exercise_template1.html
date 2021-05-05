@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Treant.css') }}"/>
+
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    
+    <!-- Treant -->
+    <script src="{{ url_for('static', filename='js/treant-js-master/Treant.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/treant-js-master/vendor/raphael.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/treant-js-master/vendor/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    
+    
+    
+    <!-- Sigma -->
+    <!--
+    <script src="{{ url_for('static', filename='js/sigma.js-1.2.1/src/sigma.core.js') }}"></script>
+    -->
+    <!-- JS Easing -->
+    <script src="{{ url_for('static', filename='js/jquery.easing.1.3.js') }}"></script>
+    
+    <!-- Vis JS -->
+    <script src="{{ url_for('static', filename='js/vis.min.js') }}"></script>
+    <link href="{{ url_for('static', filename='vis.min.css') }}" rel="stylesheet" type="text/css" />
+
+    {% if title %}
+    <title>ISLA.online/{{ title }}</title>
+    {% else %}
+    <title>ISLA.online</title>
+    {% endif %}
+    
+    
+
+</head>
+
+
+<body>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    
+    
+    <!-- JQuery -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!--
+    <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+    -->
+    <script type="text/javascript">
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        
+    </script>
+    
+    <script>
+    // Personal scripts
+    
+    
+    function add_flash_message(message_text,alert_class,dismiss_class,target,focus_target){
+        if((dismiss_class == "dismissible") || (dismiss_class == "default")){
+            new_message = document.createElement("div")
+            new_message.classList.add("alert")
+            new_message.classList.add("alert-"+alert_class)
+            new_message.innerHTML = "<button type='button' class='close' data-dismiss='alert'>&times;</button>\n"
+            new_message.innerHTML = new_message.innerHTML + message_text
+            
+            document.getElementById(target).appendChild(new_message)
+        }
+        
+        if(focus_target == "target"){
+            document.getElementById(target).scrollIntoView()
+            //alert("target")
+        }else
+        if(focus_target == "top"){
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+        
+    }
+    
+    function reset_flash_message_target(target){
+        document.getElementById(target).innerHTML = ""
+    }
+    
+    function smallify(somestring){
+
+        output = somestring.toLowerCase()
+        output = output.replace(" ","_")
+        output = output.replace(/[^0-9a-zA-Z]+/g, '')
+        
+        return(output)
+    
+    }
+    
+    function zeroStringPad(input_str, new_length){
+        input_str = input_str + ""
+        output_str = input_str.slice(0)
+        
+        while(output_str.length < new_length){
+            output_str = "0" + output_str
+        }
+        return output_str
+    }
+    
+    </script>
+    
+        <header class="site-header">
+            <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+                <div class="container" style="margin-left: 5px">
+                    <a class="navbar-brand mr-4" href="{{ url_for('exercise1_introduction') }}">ISLA.online</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarToggle">
+                        <div class="navbar-nav mr-auto small">
+
+                            <!--<a id="main-nav-link-about" class="nav-item nav-link" href="">Dashboard</a>-->
+                            <!--<a id="main-nav-link-about" class="nav-item nav-link" href="{{ url_for('about') }}">About</a>-->
+                            <!--<a id="main-nav-link-about" class="nav-item nav-link" href="">Help and Tutorials</a>-->
+                            
+                            <a id="main-nav-link-exerciseintro" class="nav-item nav-link" href="{{ url_for('exercise1_introduction') }}">Introduction</a>
+                            <a id="main-nav-link-exerciseproper" class="nav-item nav-link" href="{{ url_for('exercise1_proper') }}">Exercise 1</a>
+                            <!--<a id="main-nav-link-exercisesurvey" class="nav-item nav-link" href="{{ url_for('exercise1_survey') }}">Survey</a>-->
+                            <!--<a class="nav-item nav-link" href="{{ url_for('plot_armor_game') }}">Plot Armor Game</a>-->
+                        </div>
+                        <!-- Navbar Right Side -->
+                        <!--
+                        <div class="navbar-nav">
+                        
+                        {% if current_user.is_authenticated %}
+                        <a class="nav-item nav-link small" href="{{ url_for('account')}}">Account</a>
+                        <a class="nav-item nav-link small" href="{{ url_for('logout')}}">Logout</a>
+                        {% else %}
+                        <a class="nav-item nav-link small" href="{{ url_for('login')}}">Login</a>
+                        <a class="nav-item nav-link small" href="{{ url_for('register') }}">Register</a>
+                        {% endif %}
+                        </div>
+                        -->
+                    </div>
+
+                </div>
+            </nav>
+        </header>
+        
+        <div style="height:0px;">
+        </div>
+
+        <div class="container-fluid">
+          <span style="visibility:hidden;">Crikey! Mate!</span>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+         {% if messages %}
+          {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+           {{ message }}
+          </div>
+          {% endfor %}
+         {% endif %}
+        {% endwith %}
+
+            <div id="header_flash_message_area">
+            
+            </div>
+        </div>
+        
+        <div class="container-fluid">
+        {% block content %}
+        {% endblock %}
+        </div>
+    
+    
+        <div class="container-fluid">
+          <span style="visibility:hidden;">Another padding stuff right?</span>
+        </div>
+        
+        <div class="container-fluid">
+          <div class="alert alert-info small text-info">
+            University of the Philippines Los Baños | ICS
+            <br>
+            ISLA.online ©2020 All Rights Reserved
+          </div>
+        </div>
+    
+    <!-- [JAVSCRIPT AREA] -->
+    <script>
+
+    $(document).ready(function () {
+
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+        
+        
+
+    });
+
+    </script>
+    
+</body>
+</html>

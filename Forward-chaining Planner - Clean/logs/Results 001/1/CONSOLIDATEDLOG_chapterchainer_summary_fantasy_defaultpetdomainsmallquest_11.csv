@@ -1,0 +1,5 @@
+sep=;
+Datetime;Run ID;Story Template;Elapsed-Seconds;Elapsed-Minutes;Chapter Chainer Search Space Nodes;Neutral Object Count;Status;Algorithm;Runtime Threshold;Faulty Action Count;Location Map
+2020-12-12 18:04:04.826464 ;20201212_173952_39216d3b_1;custom_smallquesttest_1;1445.02373;24.083728833333332;6;1;SUCCESS;goalgraphmultipath;8;0;testlinear3
+2020-12-12 20:17:32.723740 ;20201212_194330_b13da439_1;custom_smallquesttest_1;2035.985307;33.93308845;6;1;SUCCESS;goalgraphmultipath;8;0;testlinear3
+2020-12-13 00:33:21.952614 ;20201212_221904_6b794a34_1;custom_smallquesttest_1;8057.37785;134.28963083333332;12;1;ERROR;goalgraphmultipath;8;0;testlinear3

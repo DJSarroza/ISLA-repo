@@ -1,0 +1,51 @@
+2020-09-23 10:20:40.968010: Goal graph nodes: 11056
+2020-09-23 10:20:40.968010: Goal graph action inventory:
+	rm_dislikes:64
+	rm_likes:64
+	move:480
+	give_mundane_item:480
+	rm_hates:64
+	rm_loves:64
+	give_item:1920
+	rm_aloof:64
+	rm_confident:64
+	rm_embarassed:64
+	rm_indifferent:64
+	rm_popular:64
+	take_thing:2880
+	pick_up_thing:320
+	do_cool_thing:960
+	rm_not_aloof:64
+	rm_not_confident:64
+	rm_not_embarassed:64
+	rm_not_indifferent:64
+	rm_not_popular:64
+	do_embarassing_thing:960
+	do_elegant_thing:960
+	friendly_act:480
+	unfriendly_act:480
+	befriend:240
+	--------------
+	11056
+2020-09-23 10:20:41.050454: [04...] Initializing planner . . .
+2020-09-23 10:20:41.050454 	 [raw][['likes', ['Shinobi', 'student'], ['Komi', 'student']]]
+2020-09-23 10:20:41.050454 	 [+]['likes', ['Shinobi', 'student'], ['Komi', 'student']]
+2020-09-23 10:20:41.410444 layer: 0; nodes: 1
+2020-09-23 10:20:42.704412 [Try #1]Plan graph generation execution time:
+2020-09-23 10:20:42.705409 	1.647974 second/s
+2020-09-23 10:20:42.706407 	0.027466233333333333 minute/s
+2020-09-23 10:20:42.706407: Completed plan cycle: [04]
+2020-09-23 10:20:42.706407: Total nodes    : 3
+2020-09-23 10:20:42.706407: Goal nodes     : 3
+2020-09-23 10:20:42.706407: Author's Goals  : [['likes', ['Shinobi', 'student'], ['Komi', 'student']]]
+2020-09-23 10:20:42.706407: Achieved intentions : 
+	['likes', ['Shinobi', 'student'], ['Komi', 'student']]
+2020-09-23 10:20:42.714385: Achieved author's goals : 
+	['likes', ['Shinobi', 'student'], ['Komi', 'student']]:3
+2020-09-23 10:20:42.715385: Action breakdown:
+	None:1
+	move:1
+	do_cool_thing:1
+2020-09-23 10:20:42.717959: Solution for: None
+2020-09-23 10:20:42.785777: Solution for: None
+2020-09-23 10:20:42.852597: Solution for: None

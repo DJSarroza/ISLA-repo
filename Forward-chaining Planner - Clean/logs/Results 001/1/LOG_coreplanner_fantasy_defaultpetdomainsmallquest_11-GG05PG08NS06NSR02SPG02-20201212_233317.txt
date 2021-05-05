@@ -1,0 +1,22 @@
+2020-12-12 23:37:24.949087: Goal graph nodes: 7326
+2020-12-12 23:37:24.949087: Goal graph action inventory:
+	creaturegetsitemfromplace:360
+	creaturegiveitemtocreature:1800
+	steal:1800
+	delegate_getquest:900
+	creaturelosesitematplace:360
+	creaturekillcreature_withweapon:450
+	creaturekillcreature_noweapon:450
+	creatureinjurescreature_withweapon:450
+	creatureinjurescreature_noweapon:450
+	creaturebleedsout:6
+	creaturebleedsout2:30
+	move:270
+	--------------
+	7326
+2020-12-12 23:37:24.949087: [05...] Initializing planner . . .
+2020-12-12 23:37:24.949087 	 [raw][['has', ['Phillip', 'person'], ['Magic_Sphere', 'mcguffin']]]
+2020-12-12 23:37:24.964664 	 [+]['has', ['Phillip', 'person'], ['Magic_Sphere', 'mcguffin']]
+2020-12-12 23:52:37.897174 [Try #1]Plan graph generation execution time:
+2020-12-12 23:52:37.897174 	912.93251 second/s
+2020-12-12 23:52:37.897174 	15.215541833333333 minute/s

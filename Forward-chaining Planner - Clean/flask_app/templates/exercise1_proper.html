@@ -1,0 +1,147 @@
+{% extends "layout_exercise_template1.html" %}
+
+{% block content %}
+
+
+    <script type=text/javascript>
+        
+        
+        function choose_domain_onclick(domain_full_label){
+        
+            $.getJSON($SCRIPT_ROOT + '/_get_narrative_instances_by_domain', {
+                
+                filter_mode                 : "random" ,
+                filter_parameter_domain     : domain_full_label ,
+                filter_parameter_quantity   : 5
+                
+            }, function(data) {
+                update_story_outlines_display_area(data.result)
+            });
+        }
+        
+        function update_story_outlines_display_area(raw_result){
+            
+            output_HTML = ""
+            
+            output_HTML = output_HTML + "        <table class='table table-hover small'>\n"
+            
+            output_HTML = output_HTML + "        <thead class='thead-dark'>\n"
+            output_HTML = output_HTML + "            <tr>\n"
+            output_HTML = output_HTML + "                <th class='align-top'>Narrative ID</th>\n"
+            output_HTML = output_HTML + "                <th class='align-top'>Narrative Label</th>\n"
+            output_HTML = output_HTML + "                <th class='align-top'>Chapter Pattern Label</th>\n"
+            output_HTML = output_HTML + "                <th class='align-top'>Description</th>\n"
+            output_HTML = output_HTML + "            </tr>\n"
+            output_HTML = output_HTML + "        </thead>\n"
+            
+            output_HTML = output_HTML + "        <tbody>\n"
+            
+            raw_rows = raw_result.split("/|")
+            for(var i=0; i<raw_rows.length; i++){
+                split_row = raw_rows[i].split("/;")
+                
+                if(split_row.length > 1){
+                    narrative_id                = split_row[0]
+                    narrative_label             = split_row[1]
+                    chapter_pattern_main_label  = split_row[2]
+                    chapter_pattern_sub_label   = split_row[3]
+                    chapter_pattern_description = split_row[4]
+                    
+                    output_HTML = output_HTML + "        <tr id=''>\n"
+                    
+                    
+                    
+                    output_HTML = output_HTML + "                <td>\n"
+                    //output_HTML = output_HTML + narrative_id                + "\n"
+                    output_HTML = output_HTML + "<a href='/narrative_instance/"+narrative_id+"' target='_blank'>"+narrative_id+"</a>\n"
+                    output_HTML = output_HTML + "                </td>\n"
+                    
+                    output_HTML = output_HTML + "                <td>\n"
+                    output_HTML = output_HTML + narrative_label             + "\n"
+                    output_HTML = output_HTML + "                </td>\n"
+                    
+                    output_HTML = output_HTML + "                <td>\n"
+                    output_HTML = output_HTML + chapter_pattern_main_label  + "\n"
+                    output_HTML = output_HTML + chapter_pattern_sub_label   + "\n"
+                    output_HTML = output_HTML + "                </td>\n"
+                    
+                    output_HTML = output_HTML + "                <td>\n"
+                    output_HTML = output_HTML + chapter_pattern_description + "\n"
+                    output_HTML = output_HTML + "                </td>\n"
+                }
+            }
+            
+            output_HTML = output_HTML + "        </tbody>\n"
+            output_HTML = output_HTML + "        </table>\n"
+            document.getElementById("story_outlines_display_area").innerHTML = output_HTML
+        }
+        
+    </script>
+    
+    <div class="row pt-1">
+      <div class="col-md-8">
+        <div class="">
+        Welcome! I am ISLA -- Intelligent Story Layout Assistant. I have been given a great honor by participating in your class as a teaching tool! I will be assisting by providing story outlines for you -- the students -- to bring to life in a full-fledged short story.
+        </div>
+        
+      </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <hr>
+        </div>
+    </div>
+    
+    <!-- [1. DOMAIN] -------------->
+    <div class="row pt-1">
+      <div class="col-md-8">
+        <div class="">
+        1. Choose a DOMAIN:
+        </div>
+        
+        <!-- images here -->
+        
+      </div>
+    </div>
+    
+    <div class="row pt-1">
+      <div class="col-md-8">
+        <div class="">
+        {% for somedomain in loadable_domains %}
+            <button type="button" class="btn btn-info" onclick="choose_domain_onclick('{{ somedomain.domain_full_label }}')">!!!</button> {{ somedomain.readable_label }}: {{ somedomain.author_notes }} <br>
+            <!-- put links and images here -->
+        {% endfor %}
+        </div>
+        
+        
+        
+      </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <hr>
+        </div>
+    </div>
+    
+    <!-- [2. STORY OUTLINE] -------------->
+    <div class="row pt-1">
+      <div class="col-md-8">
+        <div class="">
+        2. Choose a specific STORY OUTLINE. Take note of the <span class="font-weight-bold">Narrative ID</span> as you will need to include this in your final exercise output submission as a reference.
+        </div>
+      </div>
+    </div>
+    
+    <div class="row pt-1">
+      <div class="col-md-8">
+        <div class="" id="story_outlines_display_area">
+        </div>
+        
+        
+      </div>
+    </div>
+    
+    
+{% endblock content %}

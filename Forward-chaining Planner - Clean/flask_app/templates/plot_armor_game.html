@@ -1,0 +1,174 @@
+{% extends "layout_game.html" %}
+
+{% block content %}
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Controls</h3>
+            <strong>ISLA</strong>
+        </div>
+        <ul class="list-unstyled components">
+            <li class="active">
+                <a href="#gamecontrols_narrativeDisplay" data-toggle="collapse" aria-expanded="false" class="navbar-toggle">
+                Narrative
+                </a>
+                <!-- DROPDOWN TEMPLATE -->
+                <!--
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                </a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li>
+                        <a href="#">Home 1</a>
+                    </li>
+                    <li>
+                        <a href="#">Home 2</a>
+                    </li>
+                    <li>
+                        <a href="#">Home 3</a>
+                    </li>
+                </ul>
+                -->
+            </li>
+            <li>
+                <a href="#gamecontrols_characterDisplay" data-toggle="collapse" aria-expanded="false" class="navbar-toggle">
+                Characters
+                </a>
+            </li>
+            <li>
+                <a href="#gamecontrols_actionsDisplay" data-toggle="collapse" aria-expanded="false" class="navbar-toggle">
+                Actions
+                <span id="action_status" class="text-danger">!</span>
+                </a>
+                
+            </li>
+            <li>
+                <a href="#gamecontrols_locationsDisplay" data-toggle="collapse" aria-expanded="false" class="navbar-toggle">
+                Locations
+                </a>
+            </li>
+        </ul>
+
+    </nav>
+    
+    
+<!--
+              <nav class="navbar navbar-light bg-light">
+              
+
+              </nav>
+-->
+    
+
+    <!-- Page Content -->
+    <div id="content" class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <ul  class="list-unstyled components">
+              <li>
+              <br>
+              </li>
+              <li>
+                <button type="button" id="sidebarCollapse" class="btn btn-info btn-sm">
+                    <i class="fas fa-align-left"></i>
+                    <span class="small">Toggle Controls</span>
+                </button>
+              </li>
+            </ul>
+
+        </nav>
+            <!-- We'll fill this with dummy content -->
+          <!-- [ NARRATIVE DISPLAY ] -->
+        <div class="collapse show container-fluid" id="gamecontrols_narrativeDisplay">
+          <div class="content-section">
+            <h4>Narrative</h4>
+            
+            <div class="row header">
+              <div class="col-sm-6">
+              Action
+              </div>
+              <div class="col-sm-3">
+              Negative Effects
+              </div>
+              <div class="col-sm-3">
+              Positive Effects
+              </div>
+
+            </div>
+            <!-- ////============ -->
+            <div class="row alternating small">
+              <div class="col-sm-6">
+              gargax has eaten talia at the forest
+              </div>
+              <div class="col-sm-3 negative-predicate-st">
+                <div>talia is alive  </div>
+                <div>gargax is hungry</div>
+              </div>
+              
+              <div class="col-sm-3 positive-predicate">
+              
+              </div>
+            </div>
+            <!-- ////============ -->
+            <div class="row alternating small">
+              <div class="col-sm-6">
+              rory travels from the forest to the town
+              </div>
+              <div class="col-sm-3 negative-predicate-st">
+                <div>rory is at the forest</div>
+              </div>
+              
+              <div class="col-sm-3 positive-predicate">
+                <div>rory is at the town</div>
+              </div>
+            </div>
+            
+          </div>
+
+        </div>
+        
+        <!-- [ CHARACTERS DISPLAY -->
+        <div class="collapse" id="gamecontrols_characterDisplay">
+          <div class="content-section">
+            <h4>Characters</h4>
+            <span class="text-muted">Toggleable via the navbar brand.</span>
+          </div>
+        </div>
+        
+        <!-- [ ACTIONS DISPLAY -->
+        <div class="collapse" id="gamecontrols_actionsDisplay">
+          <div class="content-section">
+            <h4>Actions</h4>
+            
+            <div class="row">
+              <div clsas="col-sm-2">
+              
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- [LOCATIONS DISPLAY -->
+        <div class="collapse" id="gamecontrols_locationsDisplay">
+          <div class="content-section">
+            <h4>Locations</h4>
+            <span class="text-muted">Toggleable via the navbar brand.</span>
+          </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- [JAVSCRIPT AREA] -->
+    <script>
+
+    $(document).ready(function () {
+
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+
+    });
+
+    </script>
+
+{% endblock content %}

@@ -1,0 +1,4 @@
+sep=;
+Datetime;Run ID;Story Template;Elapsed-Seconds;Elapsed-Minutes;Neutral Object Count;Status;Algorithm;Runtime Threshold;Faulty Action Count
+2020-09-23 10:44:36.394954 ;20200923_083322_50278457;custom_solconflicttofriendship_1;7873.948206;131.2324701;6;1;SUCCESS;goalgraphmultipath;90;0
+2020-09-23 15:07:22.741356 ;20200923_104448_ee2b079f;custom_solfriendshiptoconflict_1;15754.016447;262.56694078333334;7;1;SUCCESS;goalgraphmultipath;90;0

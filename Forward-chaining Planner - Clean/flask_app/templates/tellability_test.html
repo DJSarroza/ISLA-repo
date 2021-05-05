@@ -1,0 +1,141 @@
+{% extends "layout_exercise_template1.html" %}
+
+{% block content %}
+
+<div>
+    <span>
+        previous_id
+    </span>
+    <span>
+        <input type="text" id="previous_id" value="NULL">
+    </span>
+    <span>
+        previous_label
+    </span>
+    <span>
+        <input type="text" id="previous_label" value="NULL">
+    </span>
+</div>
+<div>
+    <span>
+        current_id
+    </span>
+    <span>
+        <input type="text" id="current_id" value="NULL">
+    </span>
+    <span>
+        current_label
+    </span>
+    <span>
+        <input type="text" id="current_label" value="NULL">
+    </span>
+</div>
+
+<div>
+    <span>
+        Pattern
+    </span>
+    <span>
+        <input type="text" id="pattern" value="I">
+    </span>
+    
+</div>
+
+    
+<div>
+    <div id="main_display" class="small">
+        <div>sep=,</div>
+    </div>
+</div>
+
+<script src="//unpkg.com/string-similarity/umd/string-similarity.min.js"></script>
+<script>
+
+    function getScore(pattern, base){
+        return stringSimilarity.compareTwoStrings(pattern, base)
+    }
+</script>
+    
+    {% for chapter_instance_action in bulk %}
+    <script>
+        
+        document.getElementById("current_id").value = "{{ chapter_instance_action.NarrativeInstance.narrative_id }}"
+        
+        var previous_id = document.getElementById("previous_id").value
+        var previous_label = document.getElementById("previous_label").value
+        var current_id = document.getElementById("current_id").value
+        var current_label = document.getElementById("current_label").value
+        
+        if((previous_id != "NULL") && (current_id != previous_id)){
+            
+            var pattern = document.getElementById("pattern").value
+            
+            // Fleeting success a
+            var base1a = "I?p+??n-"
+            var score1a = getScore(pattern,base1a)
+
+            // Fleeting success b
+            var base1b = "I?p?+?n-"
+            var score1b = getScore(pattern,base1b)
+ 
+            // Fleeting success c
+            var base1c = "I?p+?n?-"
+            var score1c = getScore(pattern,base1c)
+
+            
+            // Delayed success
+            var base2 = "I?????p+"
+            var score2 = getScore(pattern,base2)
+            
+            // Tragedy
+            var base3 = "I?n?n?n?-"
+            var score3 = getScore(pattern,base3)
+            
+            new_row = document.createElement("div")            
+            new_row.innerHTML = previous_id + "," + previous_label + "," + pattern + "," + score1a + "," + score1b + "," + score1c + "," + score2 + "," + score3
+            main_display.appendChild(new_row)
+            
+            document.getElementById("pattern").value = "I"
+        }
+        
+        var _raw_string = "{{ chapter_instance_action.SolutionChapterInstanceAction.action_string }}"
+        
+        if(_raw_string.match("^get_[a-zA-Z]*")){
+            old_value = document.getElementById("pattern").value
+            document.getElementById("pattern").value = old_value + "p"
+        }else
+        if(_raw_string.match("^marine_drops_object*")){
+            old_value = document.getElementById("pattern").value
+            document.getElementById("pattern").value = old_value + "n"
+        }else
+        if(_raw_string.match("^_resolve_emo_(excited|focused|not_afraid)")){
+            old_value = document.getElementById("pattern").value
+            document.getElementById("pattern").value = old_value + "+"
+        }else
+        if(_raw_string.match("^_resolve_emo_(afraid|berserk|panic|stressed)")){
+            old_value = document.getElementById("pattern").value
+            document.getElementById("pattern").value = old_value + "-"
+        }else{
+            old_value = document.getElementById("pattern").value
+            document.getElementById("pattern").value = old_value + "?"
+        }
+        
+        
+    </script>
+    
+    <!--
+    <div>
+        <span> | {{ chapter_instance_action.NarrativeInstance.narrative_id }}</span>
+        <span> | {{ chapter_instance_action.NarrativeInstance.narrative_label }}</span>
+        <span> | {{ chapter_instance_action.SolutionChapterInstanceAction.chapter_id }}</span>
+        <span> | {{ chapter_instance_action.SolutionChapterInstanceAction.action_string }}</span>
+    </div>
+    -->
+    <script>
+        document.getElementById("previous_id").value = "{{ chapter_instance_action.NarrativeInstance.narrative_id }}"
+        document.getElementById("previous_label").value = "{{ chapter_instance_action.NarrativeInstance.narrative_label }}"
+    </script>
+    
+    {% endfor %}
+
+{% endblock content %}

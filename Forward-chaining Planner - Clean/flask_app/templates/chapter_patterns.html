@@ -1,0 +1,57 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+    <script>
+    document.getElementById("main-nav-link-ncs").className += " active";
+    </script>
+        
+    <!----------- [ TOP MENU BAR ] -->
+    <div class="content-section">
+        <div class="btn-group">
+			<a href="{{ url_for('new_chapter_pattern_instance') }}" class="btn btn-info btn-sm">New</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <table class="table table-hover" id="object_names_table">
+            <thead class="thead-dark small" id="object_names_table_thead">
+                <tr>
+                    <th class="align-top"> Main Label       </th>
+                    <th class="align-top"> Sub Label        </th>
+                    <th class="align-top"> Pattern Sequence </th>
+                    <th class="align-top"> Sequence Terms   </th>
+                    <th class="align-top"> Visibility       </th>
+                    <th class="align-top"> </th>
+                </tr>
+
+                
+            </thead>    
+            
+            <tbody id="object_names_table_tbody">
+                {% for chapter_pattern_groups_instance in chapter_pattern_groups %}
+                <tr>
+                    <td class="small"> 
+                        <a href="{{ url_for('chapter_pattern_instance',pattern_sequence=chapter_pattern_groups_instance[0]) }}">
+                        {{ chapter_pattern_groups_instance.main_label }} 
+                        </a>
+                    </td>
+                    <td class="small"> {{ chapter_pattern_groups_instance.sub_label }} </td>
+                    <td class="small"> {{ chapter_pattern_groups_instance.pattern_sequence }} </td>
+                    
+                    <td class="small">
+                    {% for chapter_pattern_chapters_instance in chapter_pattern_chapters %}
+                        {% if chapter_pattern_chapters_instance.sequence_grouping_label == chapter_pattern_groups_instance[0] %}
+                        {{ chapter_pattern_chapters_instance.sequence_term_cat_label }}<br>
+                        {% endif %}
+                    {% endfor %}
+                    </td>
+                    
+                    <td class="small"> {{ chapter_pattern_groups_instance.visibility }} </td>
+                    <td class="small">  </td>
+                    
+                </tr> 
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

@@ -1,0 +1,292 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+<script>
+document.getElementById("main-nav-link-storyarchive").className += " active";
+</script>
+
+    <div class="content-section">
+      
+      <!-- [Overcome Monster]-->
+      <div class="content-section">
+	  
+        <div class="row custom-table-header">
+            <div class="col-md-8">
+                Label
+            </div>
+            
+            <!--
+            <div class="col-md-4">
+                Run ID
+            </div>
+            -->
+            <div class="col-md-2">
+                Created By
+            </div>
+            <div class="col-md-2">
+                Date Created
+            </div>
+        </div>
+    {% for narrative_instance in narratives%}
+      {% if "overcomemonster" in narrative_instance.NarrativeInstance.story_pattern %}
+        <div class="row custom-table-row">
+            
+            <div class="col-md-8 small">
+                <a href="{{ url_for('narrative_instance',narrative_instance_id=narrative_instance.NarrativeInstance.narrative_id) }}">{{ narrative_instance.NarrativeInstance.narrative_label }}</a>
+            </div>
+            <!--
+            <div class="col-md-4 small">
+                {{ narrative_instance.NarrativeInstance.narrative_id }}
+            </div>
+            -->
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.user_id }}
+            </div>
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.date_created }}
+            </div>
+
+            
+        </div>
+    
+      {% endif %}
+    {% endfor %}
+      </div>
+    
+      <!-- [Overcome Villain]-->
+      <div class="content-section">
+	  
+        <div class="row custom-table-header">
+            <div class="col-md-8">
+                Label
+            </div>
+            
+            <!--
+            <div class="col-md-4">
+                Run ID
+            </div>
+            -->
+            <div class="col-md-2">
+                Created By
+            </div>
+            <div class="col-md-2">
+                Date Created
+            </div>
+        </div>
+    {% for narrative_instance in narratives%}
+      {% if "overcomevillain" in narrative_instance.NarrativeInstance.story_pattern %}
+        <div class="row custom-table-row">
+            
+            <div class="col-md-8 small">
+                <a href="{{ url_for('narrative_instance',narrative_instance_id=narrative_instance.NarrativeInstance.narrative_id) }}">{{ narrative_instance.NarrativeInstance.narrative_label }}</a>
+            </div>
+            <!--
+            <div class="col-md-4 small">
+                {{ narrative_instance.NarrativeInstance.narrative_id }}
+            </div>
+            -->
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.user_id }}
+            </div>
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.date_created }}
+            </div>
+
+            
+        </div>
+    
+      {% endif %}
+    {% endfor %}
+      </div>
+    
+      <!-- [Rags to Riches]-->
+      <div class="content-section">
+	  
+        <div class="row custom-table-header">
+            <div class="col-md-8">
+                Label
+            </div>
+            
+            <!--
+            <div class="col-md-4">
+                Run ID
+            </div>
+            -->
+            <div class="col-md-2">
+                Created By
+            </div>
+            <div class="col-md-2">
+                Date Created
+            </div>
+        </div>
+    {% for narrative_instance in narratives%}
+      {% if "ragstoriches" in narrative_instance.NarrativeInstance.story_pattern %}
+        <div class="row custom-table-row">
+            
+            <div class="col-md-8 small">
+                <a href="{{ url_for('narrative_instance',narrative_instance_id=narrative_instance.NarrativeInstance.narrative_id) }}">{{ narrative_instance.NarrativeInstance.narrative_label }}</a>
+            </div>
+            <!--
+            <div class="col-md-4 small">
+                {{ narrative_instance.NarrativeInstance.narrative_id }}
+            </div>
+            -->
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.user_id }}
+            </div>
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.date_created }}
+            </div>
+
+            
+        </div>
+    
+      {% endif %}
+    {% endfor %}
+      </div>
+    
+      <!-- [The Quest]-->
+      <div class="content-section">
+	  
+        <div class="row custom-table-header">
+            <div class="col-md-8">
+                Label
+            </div>
+            
+            <!--
+            <div class="col-md-4">
+                Run ID
+            </div>
+            -->
+            <div class="col-md-2">
+                Created By
+            </div>
+            <div class="col-md-2">
+                Date Created
+            </div>
+        </div>
+    {% for narrative_instance in narratives%}
+      {% if "thequest" in narrative_instance.NarrativeInstance.story_pattern %}
+        <div class="row custom-table-row">
+            
+            <div class="col-md-8 small">
+                <a href="{{ url_for('narrative_instance',narrative_instance_id=narrative_instance.NarrativeInstance.narrative_id) }}">{{ narrative_instance.NarrativeInstance.narrative_label }}</a>
+            </div>
+            <!--
+            <div class="col-md-4 small">
+                {{ narrative_instance.NarrativeInstance.narrative_id }}
+            </div>
+            -->
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.user_id }}
+            </div>
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.date_created }}
+            </div>
+
+            
+        </div>
+    
+      {% endif %}
+    {% endfor %}
+      </div>
+    
+      <!-- [Tragedy]-->
+      <div class="content-section">
+	  
+        <div class="row custom-table-header">
+            <div class="col-md-8">
+                Label
+            </div>
+            
+            <!--
+            <div class="col-md-4">
+                Run ID
+            </div>
+            -->
+            <div class="col-md-2">
+                Created By
+            </div>
+            <div class="col-md-2">
+                Date Created
+            </div>
+        </div>
+    {% for narrative_instance in narratives%}
+      {% if "tragedy" in narrative_instance.NarrativeInstance.story_pattern %}
+        <div class="row custom-table-row">
+            
+            <div class="col-md-8 small">
+                <a href="{{ url_for('narrative_instance',narrative_instance_id=narrative_instance.NarrativeInstance.narrative_id) }}">{{ narrative_instance.NarrativeInstance.narrative_label }}</a>
+            </div>
+            <!--
+            <div class="col-md-4 small">
+                {{ narrative_instance.NarrativeInstance.narrative_id }}
+            </div>
+            -->
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.user_id }}
+            </div>
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.date_created }}
+            </div>
+
+            
+        </div>
+    
+      {% endif %}
+    {% endfor %}
+      </div>
+    
+      <!-- [Voyage and Return]-->
+      <div class="content-section">
+	  
+        <div class="row custom-table-header">
+            <div class="col-md-8">
+                Label
+            </div>
+            
+            <!--
+            <div class="col-md-4">
+                Run ID
+            </div>
+            -->
+            <div class="col-md-2">
+                Created By
+            </div>
+            <div class="col-md-2">
+                Date Created
+            </div>
+        </div>
+    {% for narrative_instance in narratives%}
+      {% if "voyageandreturn" in narrative_instance.NarrativeInstance.story_pattern %}
+        <div class="row custom-table-row">
+            
+            <div class="col-md-8 small">
+                <a href="{{ url_for('narrative_instance',narrative_instance_id=narrative_instance.NarrativeInstance.narrative_id) }}">{{ narrative_instance.NarrativeInstance.narrative_label }}</a>
+            </div>
+            <!--
+            <div class="col-md-4 small">
+                {{ narrative_instance.NarrativeInstance.narrative_id }}
+            </div>
+            -->
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.user_id }}
+            </div>
+            <div class="col-md-2 small">
+                {{ narrative_instance.NarrativeInstance.date_created }}
+            </div>
+
+            
+        </div>
+    
+      {% endif %}
+    {% endfor %}
+      </div>
+    
+    
+    </div>
+
+
+    
+
+{% endblock content %}

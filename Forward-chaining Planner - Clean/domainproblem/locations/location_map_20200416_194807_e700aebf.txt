@@ -1,0 +1,4 @@
+['forest', 'location']|['village', 'location']
+['village', 'location']|['forest', 'location']
+['forest', 'location']|['mountain', 'location']
+['mountain', 'location']|['forest', 'location']

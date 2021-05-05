@@ -1,0 +1,39 @@
+2020-12-13 02:45:29.316140: Goal graph nodes: 9876
+2020-12-13 02:45:29.316140: Goal graph action inventory:
+	creaturegetsitemfromplace:480
+	creaturegiveitemtocreature:2400
+	steal:2400
+	delegate_getquest:1200
+	creaturelosesitematplace:480
+	creaturekillcreature_withweapon:600
+	creaturekillcreature_noweapon:600
+	creatureinjurescreature_withweapon:600
+	creatureinjurescreature_noweapon:600
+	move:480
+	creaturebleedsout:6
+	creaturebleedsout2:30
+	--------------
+	9876
+2020-12-13 02:45:29.331728: [03...] Initializing planner . . .
+2020-12-13 02:45:29.363117 	 [raw][['at', ['Bob', 'person'], ['forest', 'location']], ['alive', ['Bob', 'person']]]
+2020-12-13 02:45:29.380977 	 [+]['at', ['Bob', 'person'], ['forest', 'location']]
+2020-12-13 02:45:29.380977 	 [+]['alive', ['Bob', 'person']]
+2020-12-13 02:45:31.193048 [Try #1]Plan graph generation execution time:
+2020-12-13 02:45:31.193048 	1.812071 second/s
+2020-12-13 02:45:31.193048 	0.030201183333333333 minute/s
+2020-12-13 02:45:31.193048: Completed plan cycle: [03]
+2020-12-13 02:45:31.193048: Total nodes    : 3
+2020-12-13 02:45:31.193048: Goal nodes     : 2
+2020-12-13 02:45:31.193048: Author's Goals  : [['at', ['Bob', 'person'], ['forest', 'location']], ['alive', ['Bob', 'person']]]
+2020-12-13 02:45:31.193048: Achieved intentions : 
+	['alive', ['Bob', 'person']]
+	['at', ['Bob', 'person'], ['forest', 'location']]
+2020-12-13 02:45:31.208671: Achieved author's goals : 
+	['alive', ['Bob', 'person']]:3
+	['at', ['Bob', 'person'], ['forest', 'location']]:2
+2020-12-13 02:45:31.208671: Action breakdown:
+	None:1
+	move:1
+	creaturegiveitemtocreature:1
+2020-12-13 02:45:31.255534: Solution for: None
+2020-12-13 02:45:31.364884: Solution for: None

@@ -1,0 +1,56 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+    <div class="content-section">
+    Test Potato
+    </div>
+    <div class="content-section">
+	
+    
+        <table class="table table-hover" id="object_names_table">
+            <thead class="thead-dark small" id="object_names_table_thead">
+                <tr>
+                    <th class="align-top"> User ID                     </th>
+                    <th class="align-top"> Narrative ID                   </th>
+                    <th class="align-top"> Q-01   </th>
+                    <th class="align-top"> Q-02   </th>
+                    <th class="align-top"> Q-03   </th>
+                    <th class="align-top"> Q-04   </th>
+                    <th class="align-top"> Q-05   </th>
+                    <th class="align-top"> Q-06   </th>
+                    <th class="align-top"> Q-07   </th>
+                    <th class="align-top"> Q-08   </th>
+                    <th class="align-top"> Q-09   </th>
+                    <th class="align-top"> Q-10   </th>
+                    
+                    <th class="align-top"> Date Created</th>
+                </tr>
+
+                
+            </thead>    
+            
+            <tbody id="object_names_table_tbody">
+            {% for survey_instance in surveys%}
+                <tr>
+                    <td class="">{{ survey_instance.user_id }}</td>
+                    <td class="">{{ survey_instance.narrative_id }}</td>
+                    <td class="">{{ survey_instance.question_1 }}</td>
+                    <td class="">{{ survey_instance.question_2 }}</td>
+                    <td class="">{{ survey_instance.question_3 }}</td>
+                    <td class="">{{ survey_instance.question_4 }}</td>
+                    <td class="">{{ survey_instance.question_5 }}</td>
+                    <td class="">{{ survey_instance.question_6 }}</td>
+                    <td class="">{{ survey_instance.question_7 }}</td>
+                    <td class="">{{ survey_instance.question_8 }}</td>
+                    <td class="">{{ survey_instance.question_9 }}</td>
+                    <td class="">{{ survey_instance.question_10 }}</td>
+                    <td class="">{{ survey_instance.date_created }}</td>
+                    
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+	
+
+	</div>
+{% endblock content %}

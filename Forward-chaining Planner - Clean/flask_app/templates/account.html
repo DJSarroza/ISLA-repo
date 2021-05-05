@@ -1,0 +1,100 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{ profile_image_file }}">
+            <div class="media-body">
+                <h2 class="account-heading">{{ current_user.username }}</h2>
+                <p class="text-secondary">{{ current_user.email }}</p>
+            </div>
+        </div>
+        
+            <form method="POST" action="" enctype="multipart/form-data">
+                <!-- CSRF -->
+                {{ form.hidden_tag() }}
+                
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Account Info</legend>
+                    <div class="form-group">
+                        {{ form.username.label(class="form-control-label") }}
+                        
+                        {% if form.username.errors %}
+                            {{ form.username(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.username(class="form-control form-control-lg") }}
+                        {% endif %}
+                        
+                        
+                    </div>
+                    <div class="form-group">
+                        {{ form.email.label(class="form-control-label") }}
+
+                        
+                        {% if form.email.errors %}
+                            {{ form.email(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.picture.label() }}
+                        {{ form.picture(class="form-control-file") }}
+                        {% if form.picture.errors %}
+                            {% for error in form.picture.errors %}
+                            <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+        
+        
+        <div class="content-section">
+            <div class="row">
+                <div class="col-md-5">
+                    Run ID
+                </div>
+                <div class="col-md-4">
+                    Date Created
+                </div>
+                <div class="col-md-3">
+                    Status
+                </div>
+            </div>
+        {% for narrative_instance in narratives%}
+            <div class="row">
+                
+                
+                <div class="col-md-5">
+                    <a href="{{ url_for('narrative_instance',narrative_instance_id=narrative_instance.NarrativeInstance.narrative_id) }}">{{ narrative_instance.NarrativeInstance.narrative_id }}</a>
+                </div>
+                <div class="col-md-4">
+                    {{ narrative_instance.NarrativeInstance.date_created }}
+                </div>
+                <div class="col-md-3">
+                    {{ narrative_instance.UserActivePlanners.status }}
+                </div>
+                
+            </div>
+        
+            
+        {% endfor %}
+            
+        </div>
+
+    </div>
+{% endblock content %}

@@ -1,0 +1,247 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+    <script>
+    document.getElementById("main-nav-link-domains").className += " active";
+    document.getElementById("main-nav-link-ncs").className += " active";
+    </script>
+    
+
+    <!----------- [ BREADCRUMBS AREA ] -->
+    <div class="content-section">
+        <div id="top-breadcrumbs">
+        </div>
+    </div>
+
+    <script>
+    var tree_structure = {
+        chart: {
+            container: "#top-breadcrumbs",
+            levelSeparation:    160,
+            siblingSeparation:  70,
+            subTeeSeparation:   170,
+            nodeAlign: "BOTTOM",
+            rootOrientation: "WEST",
+            scrollbar: "fancy",
+            padding: 15,
+            node: { HTMLclass: "evolution-tree" },
+            connectors: {
+                type: "curve",
+                style: {
+                    "stroke-width": 2,
+                    "stroke-linecap": "round",
+                    "stroke": "#ccc"
+                }
+            }
+        },
+        
+        nodeStructure: {
+            text: { 
+                desc: "Domain"
+            },
+            //HTMLclass: "font-weight-bold",
+            image: "{{ url_for('static',filename='assets/dot.png') }}",
+            children: [
+                {
+                    text: { 
+                        desc: "Sequence Terms" 
+                    },
+                    //HTMLclass: "the-parent",
+                    image: "{{ url_for('static',filename='assets/circle.png') }}",
+                    children: [
+                        {
+                            text: { 
+                                desc: "Chapter Patterns" 
+                            },
+                            //HTMLclass: "the-parent",
+                            image: "{{ url_for('static',filename='assets/circle.png') }}",
+                            children: [
+                                {
+                                    text: { 
+                                        desc: "Locations" 
+                                    },
+                                    //HTMLclass: "the-parent",
+                                    image: "{{ url_for('static',filename='assets/circle.png') }}",
+                                    children: [
+                                        {
+                                            text: { 
+                                                desc: "Object Names" 
+                                            },
+                                            //HTMLclass: "the-parent",
+                                            image: "{{ url_for('static',filename='assets/circle.png') }}",
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                
+                }
+            ]
+        }
+
+    };
+
+    new Treant( tree_structure );
+
+    </script>
+
+
+    
+    <!----------- [ TOP MENU BAR ] -->
+    <div class="content-section">
+        <div class="btn-group">
+			<a href="{{ url_for('create_domain', copy_from='') }}" class="btn btn-info btn-sm">New</a>
+            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#topmenu_loadmodal">Load</button>
+        </div>
+    </div>
+    
+    <!-- Load Modal Space-->
+    <div class="modal fade" id="topmenu_loadmodal" role="dialog">
+        <div class="modal-dialog">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              
+              <h4 class="modal-title">Load Domain</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body small">
+            
+                <p class="small text-info font-italic">Some text in the modal.</p>
+
+                <div class="row form-group">
+                    <div class="col-md-3">
+                    Domain ID
+                    </div>
+                    <div class="col-md-3">
+                    Created By
+                    </div>
+                    <div class="col-md-3">
+                    Last Edited By
+                    </div>
+                </div>
+                {% for some_loadable_domain in loadable_domains %}
+                
+                <div class="row form-group">
+                    <div class="col-md-3">
+                    {{ some_loadable_domain.id }}
+                    </div>
+                    <div class="col-md-3">
+                    {{ some_loadable_domain.created_by }}
+                    </div>
+                    <div class="col-md-3">
+                    {{ some_loadable_domain.last_edited_by }}
+                    </div>
+                    <div class="col-md-3">
+                    <a href="{{ url_for('domain_instance',domain_instance_id=some_loadable_domain.id) }}">Load</a>
+                    </div>
+                </div>
+                
+                {%  endfor %}
+
+            </div>
+            <div class="modal-footer">
+              <button id="geninfo_add" type="button" class="btn btn-default" data-dismiss="modal">Add</button>
+              <button id="geninfo_cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              
+              <script>
+                $(function() {
+                    $('button#geninfo_add').bind('click', function() {
+                
+                        $.getJSON($SCRIPT_ROOT + '/_submit_domain_geninfo', {
+                            
+                            domain_id             :  document.getElementById("geninfo_id").value              ,
+                            readable_label        :  document.getElementById("geninfo_readable_label").value  ,
+                            author_notes          :  document.getElementById("geninfo_author_notes").value    
+                            
+                        }, function(data) {
+                            
+                            $('#geninfo_display_readable_label').html(document.getElementById("geninfo_readable_label").value);
+                            $('#geninfo_display_author_notes').html(document.getElementById("geninfo_author_notes").value);
+                        });
+                    });
+                });
+              </script>
+              
+            </div>
+          </div>
+          
+        </div>
+    </div>
+
+
+    <div class="content-section">
+        <table class="table table-hover" id="object_names_table">
+            <thead class="thead-dark small" id="object_names_table_thead">
+                <tr>
+                    <th class="align-top">                   </th>
+                    <th class="align-top"> ID                </th>
+                    <th class="align-top"> Category          </th>
+                    <th class="align-top"> Sub Label         </th>
+                    <th class="align-top"> Series            </th>
+                    <th class="align-top"> Full Label        </th>
+                    <th class="align-top"> Readable Label    </th>
+                    <th class="align-top"> Author Notes      </th>
+                    <th class="align-top"> Visibility        </th>
+                    <!--
+                    <th class="align-top"> Created By        </th>
+                    <th class="align-top"> Last Edited By    </th>
+                    -->
+                    <th class="align-top"> Status            </th>
+                    <th class="align-top"> Actions           </th>
+                </tr>
+
+                
+            </thead>    
+            
+            <tbody id="object_names_table_tbody">
+                {% for somedomain in loadable_domains %}
+                <tr>
+                    <td class="small text-center">
+                        <!--
+                        <input class="" type="checkbox">
+                        -->
+                    </td>
+                    <td class="small"> {{ somedomain.id }}                  </td>
+                    <td class="small">
+                        <a href="{{ url_for('domain_instance',domain_instance_id=somedomain.id) }}">
+                        {{ somedomain.category }}
+                        </a>
+                    </td>
+                    <td class="small"> {{ somedomain.sub_label }}           </td>
+                    <td class="small"> {{ somedomain.series }}              </td>
+                    <td class="small"> {{ somedomain.domain_full_label }}   </td>
+                    <td class="small"> {{ somedomain.readable_label }}      </td>
+                    
+                    <td class="small">
+                    {% if somedomain.author_notes is none %}
+                        
+                    {% else %}
+                        {{ somedomain.author_notes }}
+                    {% endif %}
+                    </td>                
+                    
+                    <td class="small"> {{ somedomain.visibility }}          </td>
+                    <!--
+                    <td class="small"> {{ somedomain.created_by }}          </td>
+                    <td class="small"> {{ somedomain.last_edited_by }}      </td>
+                    -->
+                    <td class="small"> {{ somedomain.status }}              </td>
+                    <td class="small">
+                        {% if somedomain.status!="INACTIVE" %}
+                        <a class="btn btn-warning btn-sm" href={{ url_for('deactivate_domain', domain_instance_id=somedomain.id) }}>Deactivate</a>
+                        {% else %}
+                        <a class="btn btn-info btn-sm" href={{ url_for('activate_domain', domain_instance_id=somedomain.id) }}>Activate</a>
+                        {% endif %}
+                    </td>
+                </tr> 
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+{% endblock content %}

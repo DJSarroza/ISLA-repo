@@ -1,0 +1,46 @@
+2020-12-12 20:40:03.800213: Goal graph nodes: 9876
+2020-12-12 20:40:03.801211: Goal graph action inventory:
+	creaturegetsitemfromplace:480
+	creaturegiveitemtocreature:2400
+	steal:2400
+	delegate_getquest:1200
+	creaturelosesitematplace:480
+	creaturekillcreature_withweapon:600
+	creaturekillcreature_noweapon:600
+	creatureinjurescreature_withweapon:600
+	creatureinjurescreature_noweapon:600
+	move:480
+	creaturebleedsout:6
+	creaturebleedsout2:30
+	--------------
+	9876
+2020-12-12 20:40:03.817167: [03...] Initializing planner . . .
+2020-12-12 20:40:03.818164 	 [raw][['at', ['Ron', 'person'], ['island', 'location']], ['alive', ['Ron', 'person']]]
+2020-12-12 20:40:03.819161 	 [+]['at', ['Ron', 'person'], ['island', 'location']]
+2020-12-12 20:40:03.820160 	 [+]['alive', ['Ron', 'person']]
+2020-12-12 20:40:04.111055 layer: 0; nodes: 1
+2020-12-12 20:40:31.642911 [Try #1]Plan graph generation execution time:
+2020-12-12 20:40:31.643908 	27.819759 second/s
+2020-12-12 20:40:31.644905 	0.46366265 minute/s
+2020-12-12 20:40:31.645903: Completed plan cycle: [03]
+2020-12-12 20:40:31.645903: Total nodes    : 41
+2020-12-12 20:40:31.645903: Goal nodes     : 2
+2020-12-12 20:40:31.645903: Author's Goals  : [['at', ['Ron', 'person'], ['island', 'location']], ['alive', ['Ron', 'person']]]
+2020-12-12 20:40:31.645903: Achieved intentions : 
+	['alive', ['Ron', 'person']]
+	['at', ['Ron', 'person'], ['island', 'location']]
+2020-12-12 20:40:31.647898: Achieved author's goals : 
+	['alive', ['Ron', 'person']]:41
+	['at', ['Ron', 'person'], ['island', 'location']]:2
+2020-12-12 20:40:31.647898: Action breakdown:
+	None:1
+	creaturegiveitemtocreature:1
+	creatureinjurescreature_noweapon:5
+	creaturegetsitemfromplace:8
+	move:17
+	creaturekillcreature_noweapon:3
+	delegate_getquest:4
+	creaturelosesitematplace:1
+	steal:1
+2020-12-12 20:40:31.856075: Solution for: None
+2020-12-12 20:40:32.132450: Solution for: None

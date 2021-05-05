@@ -1,0 +1,294 @@
+{% extends "layout_default.html" %}
+
+{% block content %}
+
+<script>
+document.getElementById("main-nav-link-ncs").className += " active";
+</script>
+
+<script>
+
+    function update_sequence_term_info_area(query_result, sequence_term){
+    
+        if(query_result == ""){
+            //document.getElementById('span-result-console').innerHTML = data.result
+            return;
+        }
+        
+        console.log("____[start]")
+        
+        raw_rows = query_result.split("/|")    
+        
+        output_HTML = ""
+        output_HTML = output_HTML + "<div class='row form-group'>\n"
+        output_HTML = output_HTML + "  <div class='col-md-10 text-secondary font-weight-bold'>\n"
+        output_HTML = output_HTML + "  "+sequence_term+"\n"
+        output_HTML = output_HTML + "  </div>\n"
+        output_HTML = output_HTML + "</div>\n"
+            
+        for(var i=0; i<raw_rows.length; i++){
+
+            split_row = raw_rows[i].split("/;")
+            
+            if(split_row.length == 12){
+                // someseqterms.main_label)                     + "/;" + \
+                // someseqterms.sub_label)                      + "/;" + \
+                // someseqterms.term_sequence)                  + "/;" + \
+                // someseqterms.term_sequence_grouping_label)   + "/;" + \
+                // someseqterms.series)                           + "/;" + \
+                // someseqterms.sequence_term_full_label)       + "/;" + \
+                // someseqterms.main_object)                    + "/;" + \
+                // someseqterms.supporting_objects)             + "/;" + \
+                // someseqterms.intention_actor)                + "/;" + \
+                // someseqterms.intention_full_str)             + "/;" + \
+                // someseqterms.direct_chained_with)            + "/;" + \
+                // someseqterms.successors)                     + "/;" + \
+                
+                output_HTML = output_HTML + "\t<div class='content-section' id='sequence_term_info_group_"+split_row[3]+"'>\n"
+                output_HTML = output_HTML + "\t  <div class='row small'>\n"
+                output_HTML = output_HTML + "\t    <div class='col-md-12' id='"+split_row[4]+"'>\n"
+                
+                output_HTML = output_HTML + "\t<table class='table-striped'>\n"
+                
+                
+                //    main_label
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Main label</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[0]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    sub_label
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Sub label</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[1]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    term_sequence
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Sequence</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[2]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    term_sequence_grouping_label
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Term Sequence Grouping label</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[3]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    sequence_term_full_label
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Full label</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[4]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    main_object
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Main Object</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[5]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    supporting_objects
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Supporting Objects</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[6]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    intention_actor
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Intention Actor</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[7]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    intention_full_str
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Intention Full String</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[8]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    direct_chained_with
+                direct_chained_with = split_row[9].split(";")
+                
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Direct Chained With</td>\n"
+                output_HTML = output_HTML + "\t    <td>"
+                
+                for(j=0; j<direct_chained_with.length; j++){
+                    output_HTML = output_HTML + direct_chained_with[j] + "<br>"
+                }
+                
+                output_HTML = output_HTML + "</td>\n"
+                
+                output_HTML = output_HTML + "\t  </tr>\n"
+                //    successor
+                output_HTML = output_HTML + "\t  <tr class='text-break'>\n"
+                output_HTML = output_HTML + "\t    <td class='font-weight-bold'>Successor</td>\n"
+                output_HTML = output_HTML + "\t    <td>"+split_row[10]+"</td>\n"
+                output_HTML = output_HTML + "\t  </tr>\n"
+
+            }
+            
+            output_HTML = output_HTML + "\t</table>\n"
+            
+            output_HTML = output_HTML + "\t    </div>\n"
+            output_HTML = output_HTML + "\t  </div>\n"
+            output_HTML = output_HTML + "\t</div>\n"
+            
+        }
+        
+        
+        document.getElementById("sequence_term_info_area").innerHTML = output_HTML
+    }
+    
+    function display_info_onchange(input_id){
+
+        $.getJSON($SCRIPT_ROOT + '/_get_sequence_term_extended_info', {
+            
+            sequence_term_cat_label   :  document.getElementById(input_id).value    
+            
+        }, function(data) {
+            
+            update_sequence_term_info_area(data.result, document.getElementById(input_id).value)
+            
+        });
+
+    }
+    
+</script>
+
+
+<!----------- [ BREADCRUMBS AREA ] -->
+<div class="content-section">
+    <div id="top-breadcrumbs">
+    </div>
+</div>
+
+    <script>
+    var tree_structure = {
+        chart: {
+            container: "#top-breadcrumbs",
+            levelSeparation:    160,
+            siblingSeparation:  70,
+            subTeeSeparation:   170,
+            nodeAlign: "BOTTOM",
+            rootOrientation: "WEST",
+            scrollbar: "fancy",
+            padding: 15,
+            node: { HTMLclass: "evolution-tree" },
+            connectors: {
+                type: "curve",
+                style: {
+                    "stroke-width": 2,
+                    "stroke-linecap": "round",
+                    "stroke": "#ccc"
+                }
+            }
+        },
+        
+        nodeStructure: {
+            text: { 
+                desc: "Domain"
+            },
+            //HTMLclass: "font-weight-bold",
+            image: "{{ url_for('static',filename='assets/circle.png') }}",
+            children: [
+                {
+                    text: { 
+                        desc: "Sequence Terms" 
+                    },
+                    //HTMLclass: "the-parent",
+                    image: "{{ url_for('static',filename='assets/dot.png') }}",
+                    children: [
+                        {
+                            text: { 
+                                desc: "Chapter Patterns" 
+                            },
+                            //HTMLclass: "the-parent",
+                            image: "{{ url_for('static',filename='assets/circle.png') }}",
+                            children: [
+                                {
+                                    text: { 
+                                        desc: "Locations" 
+                                    },
+                                    //HTMLclass: "the-parent",
+                                    image: "{{ url_for('static',filename='assets/circle.png') }}",
+                                    children: [
+                                        {
+                                            text: { 
+                                                desc: "Object Names" 
+                                            },
+                                            //HTMLclass: "the-parent",
+                                            image: "{{ url_for('static',filename='assets/circle.png') }}",
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                
+                }
+            ]
+        }
+
+    };
+
+    new Treant( tree_structure );
+
+    </script>
+
+
+    <!----------- [ TOP MENU BAR ] -->
+    <div class="content-section">
+        <div class="btn-group">
+			<a href="{{ url_for('sequence_term_category_instance', copy_from='') }}" class="btn btn-info btn-sm">New</a>
+            <button type="button" class="btn btn-info btn-sm">Load</button>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <table class="table table-hover" id="object_names_table">
+            <thead class="thead-dark small" id="object_names_table_thead">
+                <tr>
+                    <th class="align-top"> ID                </th>
+                    <th class="align-top"> Category          </th>
+                    <th class="align-top"> Domain Label         </th>
+                    <th class="align-top"> Description         </th>
+                    <th class="align-top"> Sequence Terms         </th>
+                    
+                    <th class="align-top"> Visibility        </th>
+                    <!--
+                    <th class="align-top"> Created By        </th>
+                    <th class="align-top"> Last Edited By    </th>
+                    -->
+                    <th class="align-top"> Status            </th>
+                </tr>
+
+                
+            </thead>    
+            
+            <tbody id="object_names_table_tbody">
+                {% for somecat in loadable_sequence_terms_categories %}
+                <tr>
+                    <td class="small"> {{ somecat.id }}                         </td>
+                    <td class="small"> {{ somecat.sequence_term_cat_label }}    </td>
+                    <td class="small"> {{ somecat.domain }}                     </td>
+                    
+                    <td class="small">
+                    {% if somecat.description is none %}
+                        
+                    {% else %}
+                        {{ somedomain.description }}
+                    {% endif %}
+                    </td>
+                    
+                    <td class="small">
+                    {% for someterm in sequence_terms_name_labels %}
+                    
+                        {% if someterm.sequence_term_cat_label == somecat.sequence_term_cat_label %}
+                            {{ someterm.main_label }} <br>
+                        {% endif %}
+                    {% endfor %}
+                    </td>
+                    
+                    <td class="small"> {{ somecat.visibility }}                 </td>
+                    <td class="small"> {{ somecat.status }}                     </td>
+                    
+                </tr> 
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+{% endblock content %}

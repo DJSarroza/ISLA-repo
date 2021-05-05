@@ -1,0 +1,49 @@
+2020-12-12 12:47:24.000296: Goal graph nodes: 13830
+2020-12-12 12:47:24.000296: Goal graph action inventory:
+	delegate_getquest:750
+	get_item_from_location:750
+	lose_item_at_location:750
+	give_item:3750
+	steal_item:3750
+	kill_withweapon:750
+	injure_withweapon:750
+	dummy_action1:25
+	modify_zca_pos:25
+	dummy_action3:10
+	travel:600
+	kill_noweapon:750
+	injure_noweapon:750
+	bleeds_out:30
+	bleeds_out2:30
+	dummy_action2:25
+	modify_zca_neg:25
+	dummy_action4:10
+	travel_to_sanctum:150
+	travel_from_sanctum:150
+	--------------
+	13830
+2020-12-12 12:47:24.004655: [01...] Initializing planner . . .
+2020-12-12 12:47:24.004655 	 [raw][['has_weapon', ['Talia', 'person']], ['alive', ['Bob', 'creature']], ['alive', ['Talia', 'person']]]
+2020-12-12 12:47:24.005653 	 [+]['has_weapon', ['Talia', 'person']]
+2020-12-12 12:47:24.005653 	 [+]['alive', ['Bob', 'creature']]
+2020-12-12 12:47:24.006650 	 [+]['alive', ['Talia', 'person']]
+2020-12-12 12:47:25.082422 [Try #1]Plan graph generation execution time:
+2020-12-12 12:47:25.082422 	1.074775 second/s
+2020-12-12 12:47:25.083420 	0.017912916666666667 minute/s
+2020-12-12 12:47:25.083420: Completed plan cycle: [01]
+2020-12-12 12:47:25.083420: Total nodes    : 2
+2020-12-12 12:47:25.083420: Goal nodes     : 2
+2020-12-12 12:47:25.083420: Author's Goals  : [['has_weapon', ['Talia', 'person']], ['alive', ['Bob', 'creature']], ['alive', ['Talia', 'person']]]
+2020-12-12 12:47:25.083420: Achieved intentions : 
+	['has_weapon', ['Talia', 'person']]
+	['alive', ['Bob', 'creature']]
+	['alive', ['Talia', 'person']]
+2020-12-12 12:47:25.084428: Achieved author's goals : 
+	['has_weapon', ['Talia', 'person']]:2
+	['alive', ['Bob', 'creature']]:2
+	['alive', ['Talia', 'person']]:2
+2020-12-12 12:47:25.084428: Action breakdown:
+	None:1
+	travel_to_sanctum:1
+2020-12-12 12:47:25.084428: Solution for: None
+2020-12-12 12:47:25.108384: Solution for: None

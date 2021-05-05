@@ -1,0 +1,8 @@
+forest,town1
+town1,forest
+town1,mountain
+mountain,town1
+town2,mountain
+mountain,town2
+town2,forest
+forest,town2
