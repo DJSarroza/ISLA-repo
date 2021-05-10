@@ -1,6 +1,0 @@
-sep=;
-Datetime;Run ID;Story Template;Elapsed-Seconds;Elapsed-Minutes;Chapter Chainer Search Space Nodes;Neutral Object Count;Status;Algorithm;Runtime Threshold;Faulty Action Count;Location Map
-2020-12-12 12:36:00.678092 ;20201212_114851_5dabfbb7_1;custom_smalltest_1;2814.46003;46.90766716666667;8;1;SUCCESS;goalgraphmultipath;200;0;testlinear3
-
-
----
