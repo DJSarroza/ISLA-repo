@@ -10,7 +10,7 @@ import ast
 import pddlglobals
 import hashlib
 #import json
-import multiprocessing as mp
+#import multiprocessing as mp
 
 #from multiprocessing import Pool, Value
 

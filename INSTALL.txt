@@ -1,0 +1,29 @@
+1. Download the entire code library (Forward-chaining Planner - Clean) to any local directory, 
+    e.g. "D:\CMSC300\"
+    
+        https://github.com/DJSarroza/ISLA-repo
+    
+    
+2. Install Python. I used Python 3.7
+        https://www.python.org/downloads/release/python-370/
+    
+3. Install the following packages (pip install):
+        networkx
+        secrets
+        hashlib
+        sqlalchemy
+        matplotlib
+        flask_sqlalchemy
+        flask_app
+    
+    
+4. On the local install directory (e.g. D:\CMSC300\Forward-chaining Planner - Clean\), run the
+    Python file:
+
+        run_flask_app.py
+    
+    This should start the web server
+    
+5. On a browser of your choice, access this URL:
+
+        http://localhost:5000/home
